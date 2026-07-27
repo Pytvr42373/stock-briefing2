@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 股市午盘简报</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.6}
+  
+  .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.03) 0%,transparent 70%);pointer-events:none}
+  .header h1{font-size:28px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+  .header .sub{font-size:14px;opacity:.65;margin-bottom:8px}
+  .header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .tag{display:inline-block;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:600}
+  .tag-red{background:#e74c3c;color:#fff}
+  .tag-green{background:#27ae60;color:#fff}
+  .tag-orange{background:#f39c12;color:#fff}
+  .tag-blue{background:#3498db;color:#fff}
+  .tag-gray{background:rgba(255,255,255,.15);color:#fff}
+  
+  .container{max-width:840px;margin:0 auto;padding:16px}
+  
+  .card{background:#fff;border-radius:14px;padding:22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px}
+  .card-title .badge{font-size:11px;padding:2px 8px;border-radius:10px;background:#eef;color:#666;font-weight:400}
+  
+  .summary-banner{background:linear-gradient(135deg,#fef9e7,#fdf2e9);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f39c12;font-size:14px;line-height:1.8}
+  .summary-banner strong{color:#d35400}
+  
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .index-item{background:#f8f9fc;border-radius:10px;padding:12px 14px}
+  .index-item .name{font-size:12px;color:#888;margin-bottom:2px}
+  .index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px}
+  .index-item .change{font-size:14px;font-weight:600}
+  .clr-up{color:#e74c3c}
+  .clr-down{color:#27ae60}
+  
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#f8f9fc;padding:10px 10px;text-align:left;font-weight:600;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #eee}
+  tbody td{padding:10px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+  
+  .bar-wrapper{display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:3px;min-width:4px}
+  .bar-up{background:linear-gradient(90deg,#e74c3c,#c0392b)}
+  .bar-down{background:linear-gradient(90deg,#27ae60,#1e8449)}
+  .bar-label{font-weight:600;white-space:nowrap;min-width:50px;text-align:right}
+  
+  .event-list{list-style:none}
+  .event-list li{padding:12px 0;border-bottom:1px solid #f5f5f5;font-size:14px;line-height:1.7}
+  .event-list li:last-child{border-bottom:none}
+  .ev-tag{display:inline-block;padding:1px 10px;border-radius:4px;font-size:11px;font-weight:600;margin-right:6px;vertical-align:middle}
+  .ev-critical{background:#e74c3c;color:#fff}
+  .ev-important{background:#f39c12;color:#fff}
+  .ev-info{background:#3498db;color:#fff}
+  
+  .stock-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+  .stock-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8f9fc;border-radius:8px;font-size:13px}
+  .stock-item .sname{font-weight:600}
+  .stock-item .schange{font-weight:600;font-size:13px}
+  
+  .footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#aaa;line-height:1.8}
+  
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  
+  @media(max-width:640px){.index-grid{grid-template-columns:1fr 1fr}.stock-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 午盘市场复盘</h1>
+  <div class="sub">2026-07-27 周一 · 子叩股市简报</div>
+  <div class="tags">
+    <span class="tag tag-red">4800+普涨</span>
+    <span class="tag tag-blue">长鑫上市首日+531%</span>
+    <span class="tag tag-orange">中东缓和原油-7%</span>
+    <span class="tag tag-gray">🔴涨 🟢跌 国内标准</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>长鑫科技上市引爆市场，4800+个股普涨，深成指/创业板涨超1%，科创50逆势承压<br>
+      <strong>🎯 核心判断：</strong>普涨格局确认，短期震荡修复延续，关注本周美联储决议及科技巨头财报<br>
+      <strong>⚠️ 关键风险：</strong>长鑫成交破千亿抽血效应、外部不确定性（美联储/财报/中东）
+    </div>
+    <div class="index-grid" id="indexGrid">
+
+      <div class="index-item">
+        <div class="name">上证指数</div>
+        <div class="price clr-up">3829.39</div>
+        <div class="change clr-up">🔴 +0.40%</div>
+      </div>
+      <div class="index-item">
+        <div class="name">深证成指</div>
+        <div class="price clr-up">13969.37</div>
+        <div class="change clr-up">🔴 +1.41%</div>
+      </div>
+      <div class="index-item">
+        <div class="name">创业板指</div>
+        <div class="price clr-up">3534.83</div>
+        <div class="change clr-up">🔴 +1.55%</div>
+      </div>
+      <div class="index-item">
+        <div class="name">科创50</div>
+        <div class="price clr-down">1778.79</div>
+        <div class="change clr-down">🟢 -0.47%</div>
+      </div>
+      <div class="index-item">
+        <div class="name">恒生指数</div>
+        <div class="price clr-up">25140.50</div>
+        <div class="change clr-up">🔴 +0.71%</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 半日成交额</td><td><strong>~1.35万亿</strong></td><td>长鑫单只破千亿</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong>4800+涨 / 不足300跌</strong></td><td>普涨格局</td></tr>
+      <tr><td>🎯 涨停/跌停</td><td><strong>多家涨停</strong></td><td>市场情绪: 活跃</td></tr>
+      <tr><td>💰 主力资金</td><td><strong>元件/电池/玻纤净流入</strong></td><td>长鑫抽血但结构健康</td></tr>
+      <tr><td>🌐 北向资金</td><td><strong>待收盘确认</strong></td><td>外资上周整体净买入</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔥 板块涨跌排行 <span class="badge">Sector</span></div>
+    <table>
+      <thead><tr><th style="width:45%">🟢 领涨 TOP6</th><th style="width:25%">涨跌幅</th><th>领涨个股</th></tr></thead>
+      <tbody id="upSectors">
+
+        <tr><td>玻璃玻纤</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:26.200000000000003px"></div><span class="bar-label clr-up">+5.24%</span></div></td><td>国际复材(+12.45%)</td></tr>
+        <tr><td>化妆品</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:23.15px"></div><span class="bar-label clr-up">+4.63%</span></div></td><td>水羊股份(+13.93%)</td></tr>
+        <tr><td>工程咨询服务</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:22.85px"></div><span class="bar-label clr-up">+4.57%</span></div></td><td>太极实业(+10.01%)</td></tr>
+        <tr><td>综合</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:21.85px"></div><span class="bar-label clr-up">+4.37%</span></div></td><td>东阳光(+7.17%)</td></tr>
+        <tr><td>电池</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:18.799999999999997px"></div><span class="bar-label clr-up">+3.76%</span></div></td><td>紫建电子(+19.99%)</td></tr>
+        <tr><td>教育</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:17.849999999999998px"></div><span class="bar-label clr-up">+3.57%</span></div></td><td>传智教育(+10.05%)</td></tr>
+      </tbody>
+    </table>
+    <hr class="divider">
+    <table>
+      <thead><tr><th style="width:45%">🟢 概念领涨 TOP5</th><th style="width:25%">涨跌幅</th><th>关联个股</th></tr></thead>
+      <tbody>
+
+        <tr><td>电子布</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:26.6px"></div><span class="bar-label clr-up">+5.32%</span></div></td><td>国际复材</td></tr>
+        <tr><td>家用护理</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:24.35px"></div><span class="bar-label clr-up">+4.87%</span></div></td><td>爱朋医疗</td></tr>
+        <tr><td>元梦之星</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:22.799999999999997px"></div><span class="bar-label clr-up">+4.56%</span></div></td><td>奥飞娱乐</td></tr>
+        <tr><td>高血压</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:22.549999999999997px"></div><span class="bar-label clr-up">+4.51%</span></div></td><td>乐心医疗</td></tr>
+        <tr><td>高压氧舱</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:22.3px"></div><span class="bar-label clr-up">+4.46%</span></div></td><td>创新医疗</td></tr>
+      </tbody>
+    </table>
+    <hr class="divider">
+    <table>
+      <thead><tr><th style="width:45%">🟢 领跌方向</th><th style="width:25%">表现</th><th>说明</th></tr></thead>
+      <tbody>
+
+        <tr><td>油气开采及服务</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:40px"></div><span class="bar-label clr-down">~-4%</span></div></td><td>中石油-1.09%,科力股份-14%</td></tr>
+        <tr><td>保险</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:40px"></div><span class="bar-label clr-down">~-2%</span></div></td><td>中国人寿领跌</td></tr>
+        <tr><td>半导体(存储)</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:40px"></div><span class="bar-label clr-down">承压</span></div></td><td>费城半导体-4.25%拖累</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💧 资金流向 <span class="badge">Money Flow</span></div>
+    <table>
+      <thead><tr><th style="width:12%">方向</th><th style="width:38%">板块</th><th style="width:20%">净流入</th><th>解读</th></tr></thead>
+      <tbody id="moneyFlow">
+
+        <tr><td><span style="color:#e74c3c">↑</span></td><td>元件</td><td style="color:#e74c3c;font-weight:600">+2.41亿</td><td>资金连续5日流出后回补</td></tr>
+        <tr><td><span style="color:#e74c3c">↑</span></td><td>电池</td><td style="color:#e74c3c;font-weight:600">+2.19亿</td><td>宁德时代中报超预期带动</td></tr>
+        <tr><td><span style="color:#e74c3c">↑</span></td><td>玻璃玻纤</td><td style="color:#e74c3c;font-weight:600">+1.76亿</td><td>地产链修复预期</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 热点个股 <span class="badge">Stocks</span></div>
+    <div class="stock-list" id="stockList">
+
+      <div class="stock-item"><span class="sname">N长鑫</span><span class="schange clr-up">+531.06%</span><span style="font-size:11px;color:#999">🔴科创板上市首日</span></div>
+      <div class="stock-item"><span class="sname">宁德时代</span><span class="schange clr-up">+4.41%</span><span style="font-size:11px;color:#999">🔴中报净利+42%</span></div>
+      <div class="stock-item"><span class="sname">爱朋医疗</span><span class="schange clr-up">+20.00%</span><span style="font-size:11px;color:#999">🔴脑机接口龙头</span></div>
+      <div class="stock-item"><span class="sname">米奥会展</span><span class="schange clr-up">+20.00%</span><span style="font-size:11px;color:#999">🔴AI应用涨停</span></div>
+      <div class="stock-item"><span class="sname">紫建电子</span><span class="schange clr-up">+19.99%</span><span style="font-size:11px;color:#999">🔴电池板块</span></div>
+      <div class="stock-item"><span class="sname">海康威视</span><span class="schange clr-up">+3.5%</span><span style="font-size:11px;color:#999">🔴中报净利+39.57%</span></div>
+      <div class="stock-item"><span class="sname">中石油</span><span class="schange clr-down">-1.09%</span><span style="font-size:11px;color:#999">🟢原油回落拖累</span></div>
+      <div class="stock-item"><span class="sname">浪潮信息</span><span class="schange clr-down">-2.06%</span><span style="font-size:11px;color:#999">🟢AI算力调整</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📰 财经要闻 <span class="badge">Headlines</span></div>
+    <div class="summary-banner" style="margin-bottom:12px">
+      <strong>📌 今日要闻速览：</strong><br>
+      <span>长鑫科技上市首日+531%成交破千亿｜宁德时代中报净利+42%｜两高内幕交易新规施行｜中东缓和原油-7%｜电子行业利润+96.9%</span>
+    </div>
+    <ul class="event-list" id="eventList">
+
+      <li>🔥 <span class="ev-tag ev-critical">重磅</span>长鑫科技今日科创板上市，首日暴涨531%，成交额破1000亿创A股历史纪录，市值突破3.31万亿</li>
+      <li>📊 <span class="ev-tag ev-important">重要</span>两市半日普涨，上涨个股超4800只，深成指+1.41%，创业板+1.55%，市场情绪显著回暖</li>
+      <li>💰 <span class="ev-tag ev-critical">重磅</span>宁德时代披露半年报：营收2769亿同比+54.8%，净利432.84亿同比+41.98%，拟10派14.11元，同时抛出200-400亿注销式回购方案</li>
+      <li>⚖️ <span class="ev-tag ev-important">重要</span>市场监管总局对携程滥用市场支配地位垄断行为作出行政处罚，罚没款合计51.79亿元</li>
+      <li>🛢️ <span class="ev-tag ev-important">重要</span>美军结束持续13天对伊朗空袭行动，WTI原油周一亚洲早盘一度跌近7%，中东局势缓和</li>
+      <li>📱 <span class="ev-tag ev-info">资讯</span>苹果要求iPhone 18 Pro Max OLED面板降价20%，因存储芯片价格飙升推高整机成本</li>
+      <li>💡 <span class="ev-tag ev-critical">重磅</span>国家统计局：上半年算力需求大幅增长，推动电子行业利润同比+96.9%，集成电路制造利润+2579.5%</li>
+      <li>📜 <span class="ev-tag ev-important">重要</span>两高联合发布内幕交易新司法解释，今日起施行，填补司法认定空白</li>
+      <li>🏦 <span class="ev-tag ev-important">重要</span>央行本周将开展21000亿元隔夜逆回购操作，维护银行体系流动性合理充裕</li>
+      <li>🏛️ <span class="ev-tag ev-important">重要</span>美联储本周三公布利率决议，市场预计维持3.50%-3.75%不变；本周苹果/微软/亚马逊/Meta等科技巨头财报密集披露</li>
+      <li>🧠 <span class="ev-tag ev-info">资讯</span>美国脑机接口公司Science Corp获批在欧盟销售视网膜芯片，BCI商业化里程碑</li>
+      <li>🤖 <span class="ev-tag ev-info">资讯</span>OpenAI正式发布AI智能体运营平台Presence，打通企业数据实现客服/销售自动化</li>
+      <li>🏠 <span class="ev-tag ev-info">资讯</span>山西汾酒10派65.6元，共计派发约80亿现金红利，股权登记日7月30日</li>
+      <li>📈 <span class="ev-tag ev-info">资讯</span>海康威视半年报：营收468.23亿+11.97%，净利78.96亿+39.57%；萤石网络净利+35.44%</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 深度复盘 <span class="badge">Analysis</span></div>
+    <div style="font-size:14px;line-height:2" id="deepAnalysis">
+
+<div style="margin-bottom:14px">
+  <div style="font-weight:700;color:#3498db;margin-bottom:6px">📋 政策面</div>
+  <div>①两高内幕交易新司法解释今日施行，填补司法认定短板，监管信号再度收紧；②深交所表态构筑多元包容创新企业支持体系，引导上市公司提升投资价值；③央行21000亿隔夜逆回购操作，流动性呵护信号明确；④本周关注政治局会议经济政策信号。</div>
+</div>
+<div style="margin-bottom:14px">
+  <div style="font-weight:700;color:#e67e22;margin-bottom:6px">💰 资金面</div>
+  <div>①长鑫科技上市首日单只个股成交破1000亿，抽血效应显著但市场承接力强；②北向资金动向待收盘确认，上周外资整体净买入；③元件/电池/玻璃玻纤获主力资金净流入，科技硬件板块资金分歧加大；④宁德时代200-400亿注销式回购刷新A股纪录，提振信心。</div>
+</div>
+<div style="margin-bottom:14px">
+  <div style="font-weight:700;color:#27ae60;margin-bottom:6px">🏭 产业面</div>
+  <div>①上半年算力需求推动电子行业利润同比+96.9%，集成电路制造利润+2579.5%，AI硬件景气度持续验证；②脑机接口商业化里程碑（Science Corp视网膜芯片获批欧盟），带动医药/脑科学板块爆发；③美光/SK海力士/三星业绩即将披露，存储芯片价格动向成焦点；④AI应用端OpenAI发布Presence平台，Agent商业化加速。</div>
+</div>
+<div style="margin-bottom:14px">
+  <div style="font-weight:700;color:#9b59b6;margin-bottom:6px">🌍 外盘面</div>
+  <div>①美股上周五涨跌不一，纳指周线两连跌（-2.13%），费城半导体指数-4.25%拖累科技情绪；②中东局势出现缓和信号：美军结束13天对伊空袭，WTI原油跌近7%，利好成本端；③本周美股科技巨头财报密集（苹果/微软/亚马逊/Meta），市场波动或加大；④芝商所今日推出单一股票期货，涵盖苹果/英伟达/特斯拉等。</div>
+</div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔮 后市展望 <span class="badge">Outlook</span></div>
+    <div style="font-size:14px;line-height:2" id="outlook">
+
+<div style="line-height:1.8">
+  <p><strong>午后预判：</strong>早盘普涨格局确立，4800+只个股上涨显示市场做多动能充沛。长鑫科技上市首日成交额破千亿的抽血效应已基本消化，午后有望延续震荡反弹格局。</p>
+  <p><strong>短期展望：</strong>中信证券认为8月市场出现普遍轮动修复概率高，建议关注AI链上游硬件与涨价品种、国内非AI工业股折价修复、科技与非科技三条收敛主线。东方财富陈果建议重点配置增速与估值匹配较好的新能源、煤炭、运营商、银行、公用事业、创新药、互联网等板块。</p>
+  <p><strong>风险提示：</strong>本周美联储利率决议、美股科技巨头财报、中东地缘局势反复仍是主要不确定性来源。</p>
+</div>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚖️ 多空逻辑 <span class="badge">Bull vs Bear</span></div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+      <div style="background:#f0faf0;border-radius:10px;padding:14px;border-left:3px solid #27ae60">
+        <div style="font-weight:700;color:#27ae60;margin-bottom:6px">🐂 看多因素</div>
+        <ul style="padding-left:16px;line-height:1.8">
+<li>两市超4800只个股上涨，普涨格局确认市场做多意愿强烈</li>
+<li>宁德时代中报超预期+200-400亿回购，龙头业绩锚定市场信心</li>
+<li>央行21000亿隔夜逆回购操作，流动性宽松信号明确</li>
+<li>中东局势缓和，原油大跌近7%，缓解输入性通胀压力</li>
+<li>上半年电子行业利润+96.9%，AI产业景气度持续验证</li>
+<li>长鑫科技上市首日530%涨幅，半导体板块情绪提振</li>
+
+        </ul>
+      </div>
+      <div style="background:#fff5f5;border-radius:10px;padding:14px;border-left:3px solid #e74c3c">
+        <div style="font-weight:700;color:#e74c3c;margin-bottom:6px">🐻 看空因素</div>
+        <ul style="padding-left:16px;line-height:1.8">
+<li>长鑫科技单日成交破1000亿，市场资金面结构性失衡</li>
+<li>本周美联储利率决议+科技巨头财报季，外部不确定性集中</li>
+<li>费城半导体指数上周-4.25%，全球科技股估值承压</li>
+<li>科创50逆势下跌-0.47%，科技板块内部分化明显</li>
+<li>中石油-1.09%：原油价格波动仍可能反复</li>
+<li>携程被罚没51.79亿，互联网平台监管趋严信号</li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  子叩 · 每日股市简报 | 数据来源：stock-data-skill + 公开财经资讯<br>
+  以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
