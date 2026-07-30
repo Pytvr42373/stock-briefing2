@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 股市简报 · 午盘 2026-07-30</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.6}
+
+  /* Header */
+  .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.03) 0%,transparent 70%);pointer-events:none}
+  .header h1{font-size:28px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+  .header .sub{font-size:14px;opacity:.65;margin-bottom:8px}
+  .header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .tag{display:inline-block;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:600}
+  .tag-red{background:#e74c3c;color:#fff}
+  .tag-green{background:#27ae60;color:#fff}
+  .tag-orange{background:#f39c12;color:#fff}
+  .tag-blue{background:#3498db;color:#fff}
+  .tag-gray{background:rgba(255,255,255,.15);color:#fff}
+
+  .container{max-width:840px;margin:0 auto;padding:16px}
+
+  /* Cards */
+  .card{background:#fff;border-radius:14px;padding:22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:box-shadow .2s}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px}
+  .card-title .badge{font-size:11px;padding:2px 8px;border-radius:10px;background:#eef;color:#666;font-weight:400}
+
+  /* Summary Banner */
+  .summary-banner{background:linear-gradient(135deg,#fef9e7,#fdf2e9);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f39c12;font-size:14px;line-height:1.8}
+  .summary-banner strong{color:#d35400}
+
+  /* Index Grid */
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .index-item{background:#f8f9fc;border-radius:10px;padding:12px 14px;transition:background .2s}
+  .index-item .name{font-size:12px;color:#888;margin-bottom:2px}
+  .index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px}
+  .index-item .change{font-size:14px;font-weight:600}
+  .clr-up{color:#e74c3c}
+  .clr-down{color:#27ae60}
+
+  /* Tables */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#f8f9fc;padding:10px 10px;text-align:left;font-weight:600;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #eee}
+  tbody td{padding:10px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+
+  /* Progress bars for 涨跌幅 */
+  .bar-wrapper{display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:3px;min-width:4px;transition:width .3s}
+  .bar-up{background:linear-gradient(90deg,#e74c3c,#c0392b)}
+  .bar-down{background:linear-gradient(90deg,#27ae60,#1e8449)}
+  .bar-label{font-weight:600;white-space:nowrap;min-width:50px;text-align:right}
+
+  /* Event List */
+  .event-list{list-style:none}
+  .event-list li{padding:12px 0;border-bottom:1px solid #f5f5f5;font-size:14px;line-height:1.7}
+  .event-list li:last-child{border-bottom:none}
+  .ev-tag{display:inline-block;padding:1px 10px;border-radius:4px;font-size:11px;font-weight:600;margin-right:6px;vertical-align:middle}
+  .ev-critical{background:#e74c3c;color:#fff}
+  .ev-important{background:#f39c12;color:#fff}
+  .ev-info{background:#3498db;color:#fff}
+
+  /* Stock highlight */
+  .stock-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+  .stock-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8f9fc;border-radius:8px;font-size:13px}
+  .stock-item .sname{font-weight:600}
+  .stock-item .schange{font-weight:600;font-size:13px}
+
+  /* Footer */
+  .footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#aaa;line-height:1.8}
+  .footer a{color:#666;text-decoration:none}
+
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+
+  @media(max-width:640px){.index-grid{grid-template-columns:1fr 1fr}.stock-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌤 午盘速评 · 恐慌杀跌与防御迁徙</h1>
+  <div class="sub">2026年07月30日 星期四 · 子叩股市简报 · 数据截至12:04</div>
+  <div class="tags">
+    <span class="tag tag-green">科技主跌浪</span>
+    <span class="tag tag-red">消费防御逆势</span>
+    <span class="tag tag-orange">情绪冰点</span>
+    <span class="tag tag-gray">🔴涨 🟢跌 国内标准</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心速览 -->
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>恐慌杀跌、极端分化。美联储鹰派按兵不动+SK海力士业绩不及预期引爆全球半导体抛售，A股科技股延续主跌浪，资金系统性"弃硅投碳"涌入大消费与金融防御。<br>
+      <strong>🎯 核心判断：</strong>昨日反抽仅活一天即被阴包阳吞噬，科创50距7月高点已跌逾28%再创新低；但下跌集中于高位科技，白酒/商用车/银行逆势吸金，高低切换仍是主线。<br>
+      <strong>⚠️ 关键风险：</strong>半导体板块无止跌信号、跌停潮未散；今晚三星财报+Meta/微软/苹果业绩密集落地，外围波动或继续传导。
+    </div>
+    <div class="index-grid">
+      <div class="index-item"><div class="name">上证指数</div><div class="price">3784.55</div><div class="change clr-down">🟢 -43.92 (-1.15%)</div></div>
+      <div class="index-item"><div class="name">深证成指</div><div class="price">13141.22</div><div class="change clr-down">🟢 -517.22 (-3.79%)</div></div>
+      <div class="index-item"><div class="name">创业板指</div><div class="price">3179.58</div><div class="change clr-down">🟢 -199.12 (-5.89%)</div></div>
+      <div class="index-item"><div class="name">科创50</div><div class="price">1572.25</div><div class="change clr-down">🟢 -106.49 (-6.34%)</div></div>
+      <div class="index-item"><div class="name">恒生指数</div><div class="price">25784.42</div><div class="change clr-down">🟢 -23.50 (-0.09%)</div></div>
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 半日成交额</td><td><strong>1.45万亿</strong></td><td>较上日同期缩量264亿（财联社）</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong>超3400股下跌</strong></td><td>热点杂乱，恐慌集中释放</td></tr>
+      <tr><td>🎯 跌停情况</td><td><strong>通富微电/东山精密/紫光股份封死跌停</strong></td><td>市场情绪: 冰点</td></tr>
+      <tr><td>💰 主力资金</td><td><strong>科技大幅净流出、消费金融净流入</strong></td><td>资金态度: 防御性迁徙</td></tr>
+      <tr><td>🌐 北向资金</td><td><strong>盘中数据不再实时披露</strong></td><td>外资态度: 待收盘观察</td></tr>
+    </table>
+  </div>
+
+  <!-- 板块排行 -->
+  <div class="card">
+    <div class="card-title">🔥 板块涨跌排行 <span class="badge">Sector</span></div>
+    <table>
+      <thead><tr><th style="width:45%">🔴 领涨 TOP5</th><th style="width:25%">涨跌幅</th><th>领涨个股</th></tr></thead>
+      <tbody>
+        <tr><td>🚚 商用车</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:81px"></div><span class="bar-label clr-up">+4.04%</span></div></td><td>江淮汽车 +10.01%</td></tr>
+        <tr><td>🍶 白酒Ⅱ</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:73px"></div><span class="bar-label clr-up">+3.63%</span></div></td><td>金徽酒 +10.03%</td></tr>
+        <tr><td>🍳 厨卫电器</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:60px"></div><span class="bar-label clr-up">+3.02%</span></div></td><td>火星人 +20.04%</td></tr>
+        <tr><td>🏨 酒店餐饮</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:57px"></div><span class="bar-label clr-up">+2.84%</span></div></td><td>西安饮食 +10.02%</td></tr>
+        <tr><td>🧂 调味发酵品Ⅱ</td><td><div class="bar-wrapper"><div class="bar bar-up" style="width:55px"></div><span class="bar-label clr-up">+2.76%</span></div></td><td>安记食品 +9.98%</td></tr>
+      </tbody>
+    </table>
+    <hr class="divider">
+    <table>
+      <thead><tr><th style="width:45%">🟢 领跌 TOP5</th><th style="width:25%">涨跌幅</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>📡 通信设备</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:100px"></div><span class="bar-label clr-down">-12.10%</span></div></td><td>光模块三龙头重挫</td></tr>
+        <tr><td>🔌 元件</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:74px"></div><span class="bar-label clr-down">-8.95%</span></div></td><td>PCB/被动元件跟跌</td></tr>
+        <tr><td>💾 半导体</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:65px"></div><span class="bar-label clr-down">-7.84%</span></div></td><td>通富微电/紫光股份跌停</td></tr>
+        <tr><td>⚡ 电网设备</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:17px"></div><span class="bar-label clr-down">-2.02%</span></div></td><td>高位题材补跌</td></tr>
+        <tr><td>📉 证券Ⅱ</td><td><div class="bar-wrapper"><div class="bar bar-down" style="width:6px"></div><span class="bar-label clr-down">-0.41%</span></div></td><td>缩量压制券商弹性</td></tr>
+      </tbody>
+    </table>
+    <hr class="divider">
+    <div style="font-size:13px;color:#888;line-height:1.8">概念板块：🔴 昨日连板+4.95% · 华为汽车股权合作+4.31% · 大消费+2.13% · 白酒概念+2.84% · 稳定币概念+2.67%</div>
+  </div>
+
+  <!-- 资金流向 -->
+  <div class="card">
+    <div class="card-title">💧 资金流向 <span class="badge">Money Flow</span></div>
+    <table>
+      <thead><tr><th style="width:12%">方向</th><th style="width:38%">板块/个股</th><th style="width:20%">净流入/出</th><th>解读</th></tr></thead>
+      <tbody>
+        <tr><td>🔴</td><td>白酒Ⅱ（板块）</td><td class="clr-up">+14.79亿</td><td>防御首选，19只成份股几乎全红</td></tr>
+        <tr><td>🔴</td><td>乘用车（板块）</td><td class="clr-up">+6.88亿</td><td>江淮汽车涨停、赛力斯+5.53%</td></tr>
+        <tr><td>🔴</td><td>股份制银行Ⅱ（板块）</td><td class="clr-up">+6.23亿</td><td>高股息避险属性凸显</td></tr>
+        <tr><td>🔴</td><td>贵州茅台（个股）</td><td class="clr-up">+5.80亿</td><td>主力流入全市场第2，+2.85%</td></tr>
+        <tr><td>🔴</td><td>五粮液（个股）</td><td class="clr-up">+4.56亿</td><td>+4.63%领涨白酒权重</td></tr>
+        <tr><td>🟢</td><td>中际旭创（个股）</td><td class="clr-down">-46.63亿</td><td>-15.77%，主力出逃全市场第一</td></tr>
+        <tr><td>🟢</td><td>新易盛（个股）</td><td class="clr-down">-38.04亿</td><td>-16.43%，光模块抛售最重</td></tr>
+        <tr><td>🟢</td><td>通富微电（个股）</td><td class="clr-down">-10.57亿</td><td>三连杀跌封死跌停</td></tr>
+        <tr><td>🟢</td><td>兆易创新（个股）</td><td class="clr-down">-8.48亿</td><td>盘中跌停后收窄至-4.68%</td></tr>
+        <tr><td>🟢</td><td>紫光股份（个股）</td><td class="clr-down">-3.32亿</td><td>算力龙头亦被恐慌裹挟跌停</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 热点个股 -->
+  <div class="card">
+    <div class="card-title">🎯 热点个股 <span class="badge">Stocks</span></div>
+    <div class="stock-list">
+      <div class="stock-item"><span class="sname">C长鑫</span><span class="schange clr-down">🟢 -5.19% · 50.20</span></div>
+      <div class="stock-item"><span class="sname">中际旭创</span><span class="schange clr-down">🟢 -15.77% · 800.99</span></div>
+      <div class="stock-item"><span class="sname">新易盛</span><span class="schange clr-down">🟢 -16.43% · 352.00</span></div>
+      <div class="stock-item"><span class="sname">天孚通信</span><span class="schange clr-down">🟢 -13.50% · 157.50</span></div>
+      <div class="stock-item"><span class="sname">寒武纪</span><span class="schange clr-down">🟢 -11.07% · 1019.95</span></div>
+      <div class="stock-item"><span class="sname">通富微电</span><span class="schange clr-down">🟢 -10.00% · 55.89</span></div>
+      <div class="stock-item"><span class="sname">紫光股份</span><span class="schange clr-down">🟢 -9.99% · 33.60</span></div>
+      <div class="stock-item"><span class="sname">东山精密</span><span class="schange clr-down">🟢 -10.00% · 161.80</span></div>
+      <div class="stock-item"><span class="sname">长电科技</span><span class="schange clr-down">🟢 -9.71% · 64.72</span></div>
+      <div class="stock-item"><span class="sname">工业富联</span><span class="schange clr-down">🟢 -7.36% · 53.50</span></div>
+      <div class="stock-item"><span class="sname">兆易创新</span><span class="schange clr-down">🟢 -4.68% · 347.00</span></div>
+      <div class="stock-item"><span class="sname">江淮汽车</span><span class="schange clr-up">🔴 +10.01% · 24.39</span></div>
+      <div class="stock-item"><span class="sname">赛力斯</span><span class="schange clr-up">🔴 +5.53% · 61.21</span></div>
+      <div class="stock-item"><span class="sname">五粮液</span><span class="schange clr-up">🔴 +4.63% · 78.65</span></div>
+      <div class="stock-item"><span class="sname">贵州茅台</span><span class="schange clr-up">🔴 +2.85% · 1358.65</span></div>
+      <div class="stock-item"><span class="sname">工商银行</span><span class="schange clr-up">🔴 +2.39% · 8.14</span></div>
+      <div class="stock-item"><span class="sname">一鸣食品</span><span class="schange clr-up">🔴 +9.99% · 17.61</span></div>
+      <div class="stock-item"><span class="sname">长城军工</span><span class="schange clr-up">🔴 +5.46% · 35.15</span></div>
+    </div>
+  </div>
+
+  <!-- 财经要闻 -->
+  <div class="card">
+    <div class="card-title">📰 财经要闻 <span class="badge">Headlines</span></div>
+    <div class="summary-banner" style="margin-bottom:12px">
+      <strong>📌 今日要闻速览：</strong><br>
+      ① 美联储第五次按兵不动，但3张反对票主张加息25bp，为史上最强鹰派信号；② SK海力士Q2利润同比+557%创纪录却不及预期，韩国KOSPI连续两日熔断、7月累跌超30%；③ 隔夜美股道指暴跌2.19%，纳指正式进入技术性调整；④ 央行今日净投放625亿元+6000亿隔夜逆回购护航跨月；⑤ 兆易创新抛10-20亿注销式回购，产业资本密集出手稳信心。
+    </div>
+    <ul class="event-list">
+      <li><span class="ev-tag ev-critical">重磅</span><strong>美联储维持利率3.5%-3.75%不变（连续第五次），但决议出现3张反对票</strong>——三名官员均主张加息25bp，为美联储内部最强鹰派信号。主席沃什强调"不存在软性通胀目标"，并称若有需要"将毫不犹豫采取行动"。美债收益率维持高位，全球风险资产估值持续承压。（来源：财经早报/CNBC）</li>
+      <li><span class="ev-tag ev-critical">重磅</span><strong>SK海力士Q2财报"创纪录却不及预期"：营收79.3万亿韩元（同比+257%）、营业利润60.5万亿韩元（同比+557%）</strong>，均刷新历史纪录，但低于市场预期的84万亿/64万亿，且资本开支上调至310亿美元以上、股东回报细节缺失。周三股价收跌9.61%（盘中一度跌近20%），韩国KOSPI连续两日触发熔断，7月累跌超30%，创韩国股市史上最大单月跌幅纪录。（来源：搜狐财经/财联社）</li>
+      <li><span class="ev-tag ev-critical">重磅</span><strong>隔夜美股遭遇"黑色星期三"：道指-2.19%、标普500-1.52%、纳指-1.74%</strong>。纳指较历史高点累计回落超10%，正式进入技术性调整区间；费城半导体指数五连跌，美光跌近10%、闪迪跌逾7%。同时伊朗局势升级推动WTI原油大涨6.74%至84.6美元、布油+7.35%至88.11美元，COMEX黄金涨0.66%报4065.5美元。（来源：财经早餐）</li>
+      <li><span class="ev-tag ev-important">重要</span><strong>央行护航月末流动性：今日开展2705亿元7天期逆回购，对冲2080亿到期后净投放625亿元</strong>，并延续6000亿元隔夜逆回购操作。机构认为7月非季末月、政府债缴款压力下降，资金面有望平稳跨月——但市场"不领情"，核心矛盾在于信心而非流动性。（来源：东方财富/中证报）</li>
+      <li><span class="ev-tag ev-important">重要</span><strong>产业资本密集出手：兆易创新披露10-20亿元注销式回购预案，董事长同步公布增持计划</strong>；澜起科技、虹软科技、海特高新、万孚生物等多家公司晚间披露回购或增持方案，在科技股恐慌杀跌中释放积极信号。（来源：证券时报/财经早报）</li>
+      <li><span class="ev-tag ev-important">重要</span><strong>九部门联合印发《关于加强科技金融领域数据开发利用的通知》</strong>，发布《全国科技金融领域数据开发利用目录1.0》，将开展科技金融可信数据空间创新发展试点，利好数据要素与金融科技赛道。（来源：上海证券报）</li>
+      <li><span class="ev-tag ev-info">关注</span><strong>商务部印发通知加力推动城市一刻钟便民生活圈建设</strong>，2026年完成全国建设1万个便民生活圈既定目标，推动国货"潮品"、外贸优品进社区，配合消费补贴落地助力内需修复——与今日大消费板块逆势走强形成呼应。（来源：中国证券报）</li>
+      <li><span class="ev-tag ev-info">关注</span><strong>地缘与贸易摩擦双线发酵：伊朗拒绝阿曼提出的霍尔木兹海峡联合管理机制</strong>，要求控制整条入港航线；美国FCC将外国制造先进机器人（含人形机器人）纳入受限设备清单，外交部回应"坚决反对美方泛化国家安全概念打压中国企业"。油价与军工板块因此获得催化。（来源：央视新闻/财联社）</li>
+      <li><span class="ev-tag ev-info">关注</span><strong>资金"越跌越买"宽基：7月以来ETF合计吸金超4200亿元</strong>，宽基ETF净流入2581亿元创年内峰值，科创50ETF华夏单月吸金348亿元居首；宽基ETF连续两日成交额破千亿，29日放量至1097亿元。（来源：Wind/财联社）</li>
+    </ul>
+  </div>
+
+  <!-- 深度复盘 -->
+  <div class="card">
+    <div class="card-title">🔍 深度复盘 <span class="badge">Analysis</span></div>
+    <div style="font-size:14px;line-height:2">
+      <p><strong>🏛 政策面：</strong>央行连续净投放+6000亿隔夜逆回购护航跨月，九部门科技金融数据新政、商务部便民生活圈通知齐发，政策端并不缺位。但市场"不领情"——本轮调整的核心矛盾不在流动性，而在风险偏好与信心。政策托底提供了"跌不深"的下方支撑，却暂时无法扭转科技板块的估值出清。</p>
+      <p style="margin-top:8px"><strong>💰 资金面：</strong>半日成交1.45万亿、缩量264亿，恐慌抛压仍在但增量买盘谨慎。结构上是一次教科书式的"防御性迁徙"：白酒Ⅱ主力净流入14.79亿、乘用车6.88亿、股份行6.23亿，茅台/五粮液分获5.80亿/4.56亿增持；而中际旭创-46.63亿、新易盛-38.04亿、通富微电-10.57亿，仅两只光模块龙头半日即被抽走近85亿。资金没有离场A股，只是从"硅基"那桌换到了"碳基"这桌。</p>
+      <p style="margin-top:8px"><strong>🏭 产业面：</strong>SK海力士"利润+557%仍不及预期"标志着市场对AI资本开支的定价逻辑生变——继Alphabet自由现金流二季度转负后，投资者开始追问AI基建投入的回报与融资质量。叠加长鑫科技7月28日上市（单日成交超1400亿）与国产DUV设备突破带来的供给侧重估，半导体板块112倍PE的估值消化远未完成。反观大消费：商务部生活圈新政+公募消费仓位偏低，低位补涨逻辑获得资金共识。</p>
+      <p style="margin-top:8px"><strong>🌐 外盘面：</strong>美联储3张鹰派反对票+沃什"毫不犹豫行动"表态令美债收益率高企；韩国KOSPI连续两日熔断、7月累跌超30%，SK海力士自6月高点已跌近47%，杠杆ETF市值蒸发约53%，散户由买转卖形成负反馈；伊朗拒绝海峡联合管理推动油价单日暴涨逾6.7%，通胀预期再起进一步压缩宽松空间。今晚三星电子财报与Meta/微软/苹果业绩密集落地，外围仍是A股科技情绪的最大变量。</p>
+    </div>
+  </div>
+
+  <!-- 午后预判 -->
+  <div class="card">
+    <div class="card-title">🔮 午后预判 <span class="badge">Outlook</span></div>
+    <div style="font-size:14px;line-height:2">
+      <p><strong>① 先看抛压，再谈机会：</strong>极端杀跌阶段唯一信号是"抛压衰竭"——重点观察通富微电/紫光股份等跌停股午后能否打开、量能能否从极端放大转为萎缩。不再放量创新低，才是情绪收敛的第一步。</p>
+      <p><strong>② 科技暂无止跌信号：</strong>科创50自2188高点跌逾28%，昨日反抽一日即被吞噬，阴包阳结构确认主跌浪；半导体/光模块跌停潮未散，盲目抄底等于接飞刀。</p>
+      <p><strong>③ 防御主线仍有惯性：</strong>白酒/商用车/银行/军工的吸金格局未破坏，但需警惕低位板块拥挤度快速上升后的日内波动；高股息+必选消费仍是相对稳妥的避风港。</p>
+      <p><strong>④ 关键节点在今夜：</strong>三星电子财报、Meta/微软/苹果业绩、美国初请失业金人数——外围科技股能否企稳，将直接决定明日A股科技板块是延续杀跌还是超跌修复。</p>
+    </div>
+  </div>
+
+  <!-- 多空逻辑 -->
+  <div class="card">
+    <div class="card-title">⚖️ 多空逻辑 <span class="badge">Bull vs Bear</span></div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+      <div style="background:#f0faf0;border-radius:10px;padding:14px;border-left:3px solid #27ae60">
+        <div style="font-weight:700;color:#27ae60;margin-bottom:6px">🐂 看多因素</div>
+        <ul style="padding-left:16px;line-height:1.8">
+          <li>央行连续净投放+6000亿隔夜逆回购，流动性无忧、平稳跨月</li>
+          <li>7月宽基ETF逆势吸金2581亿创年内峰值，机构资金"越跌越买"</li>
+          <li>兆易创新10-20亿注销式回购+多公司增持潮，产业资本真金白银托底</li>
+          <li>高低切换主线清晰：消费/金融/汽车低位板块持续吸金，并非系统性撤离</li>
+          <li>美联储维持利率不变，短期"靴子落地"，加息尚未真正实施</li>
+          <li>恒生指数仅微跌0.09%显著抗跌，港股稳定提供情绪缓冲</li>
+        </ul>
+      </div>
+      <div style="background:#fff5f5;border-radius:10px;padding:14px;border-left:3px solid #e74c3c">
+        <div style="font-weight:700;color:#e74c3c;margin-bottom:6px">🐻 看空因素</div>
+        <ul style="padding-left:16px;line-height:1.8">
+          <li>美联储3张反对票主张加息25bp，史上最强鹰派信号，美债收益率高企压估值</li>
+          <li>SK海力士业绩不及预期+韩国KOSPI连续两日熔断（7月-30%），AI半导体峰值论发酵</li>
+          <li>科创50距高点-28%、昨日反抽一日即被阴包阳吞噬，主跌浪结构确认</li>
+          <li>半导体板块PE高达112倍，估值与盈利错配，消化远未完成</li>
+          <li>伊朗局势升级推动油价单日+6.7%，通胀预期再起压缩全球宽松空间</li>
+          <li>今晚三星+美国科技巨头财报密集落地，外围不确定性仍高</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  子叩 · 每日股市简报 | 数据来源：stock-data-skill（腾讯行情）+ 财联社/证券时报/中证报等公开财经资讯<br>
+  以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
