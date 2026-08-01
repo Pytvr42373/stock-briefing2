@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 股市简报 - 周末午盘更新</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.6}
+  .header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.03) 0%,transparent 70%);pointer-events:none}
+  .header h1{font-size:28px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+  .header .sub{font-size:14px;opacity:.65;margin-bottom:8px}
+  .header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .tag{display:inline-block;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:600}
+  .tag-red{background:#e74c3c;color:#fff}
+  .tag-green{background:#27ae60;color:#fff}
+  .tag-orange{background:#f39c12;color:#fff}
+  .tag-blue{background:#3498db;color:#fff}
+  .tag-gray{background:rgba(255,255,255,.15);color:#fff}
+  .container{max-width:840px;margin:0 auto;padding:16px}
+  .card{background:#fff;border-radius:14px;padding:22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:box-shadow .2s}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px}
+  .card-title .badge{font-size:11px;padding:2px 8px;border-radius:10px;background:#eef;color:#666;font-weight:400}
+  .summary-banner{background:linear-gradient(135deg,#fef9e7,#fdf2e9);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f39c12;font-size:14px;line-height:1.8}
+  .summary-banner strong{color:#d35400}
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .index-item{background:#f8f9fc;border-radius:10px;padding:12px 14px;transition:background .2s}
+  .index-item .name{font-size:12px;color:#888;margin-bottom:2px}
+  .index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px}
+  .index-item .change{font-size:14px;font-weight:600}
+  .clr-up{color:#e74c3c}
+  .clr-down{color:#27ae60}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#f8f9fc;padding:10px 10px;text-align:left;font-weight:600;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #eee}
+  tbody td{padding:10px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+  .bar-wrapper{display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:3px;min-width:4px;transition:width .3s}
+  .bar-up{background:linear-gradient(90deg,#e74c3c,#c0392b)}
+  .bar-down{background:linear-gradient(90deg,#27ae60,#1e8449)}
+  .bar-label{font-weight:600;white-space:nowrap;min-width:50px;text-align:right}
+  .event-list{list-style:none}
+  .event-list li{padding:12px 0;border-bottom:1px solid #f5f5f5;font-size:14px;line-height:1.7}
+  .event-list li:last-child{border-bottom:none}
+  .ev-tag{display:inline-block;padding:1px 10px;border-radius:4px;font-size:11px;font-weight:600;margin-right:6px;vertical-align:middle}
+  .ev-critical{background:#e74c3c;color:#fff}
+  .ev-important{background:#f39c12;color:#fff}
+  .ev-info{background:#3498db;color:#fff}
+  .stock-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+  .stock-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8f9fc;border-radius:8px;font-size:13px}
+  .stock-item .sname{font-weight:600}
+  .stock-item .schange{font-weight:600;font-size:13px}
+  .footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#aaa;line-height:1.8}
+  .footer a{color:#666;text-decoration:none}
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  @media(max-width:640px){.index-grid{grid-template-columns:1fr 1fr}.stock-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 周末午盘速评</h1>
+  <div class="sub">2026年08月01日 周六 · 午间更新 · 子叩股市简报</div>
+  <div class="tags">
+    <span class="tag tag-red">🛑 周末休市 · 8月展望</span>
+    <span class="tag tag-gray">🔴涨 🟢跌 国内标准</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心速览 -->
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>周末重磅消息密集落地——国常会核准4核电项目+四部门金融机构治理新规+个贷新规实施+中东局势升级+美股/韩股暴力反弹。A股周五（7/31）放量普涨修复，超4600股上涨，成交2.54万亿。8月首个交易日迎多重催化，周一有望高开，但需警惕中东地缘风险的扰动<br>
+      <strong>🎯 核心判断：</strong>周五放量修复+周末四维度利好（产业/监管/外盘/资金）共振，8月开门红概率较高。但需注意：7月PMI回落至49.2%荣枯线下+北向资金连续三日净流出+中东局势升级（油价+4.78%突破91美元），多重利好背后暗藏结构分化<br>
+      <strong>⚠️ 关键风险：</strong>中东局势升级（特朗普下令对伊朗新一轮打击，霍尔木兹海峡通行受阻）+ 美联储沃什考虑减少议息会议频率 + 7月PMI超预期回落至49.2% + 北向资金连续净流出 + 两融7月累计净卖出超3000亿
+    </div>
+    <div class="index-grid" id="indexGrid">
+      <div class="index-item"><div class="name">上证指数</div><div class="price clr-up">3,832.26</div><div class="change clr-up">🔴+0.72%</div></div>
+      <div class="index-item"><div class="name">深证成指</div><div class="price clr-up">13,578.93</div><div class="change clr-up">🔴+2.21%</div></div>
+      <div class="index-item"><div class="name">创业板指</div><div class="price clr-up">3,343.96</div><div class="change clr-up">🔴+3.06%</div></div>
+      <div class="index-item"><div class="name">科创50</div><div class="price clr-up">1,635.96</div><div class="change clr-up">🔴+2.99%</div></div>
+      <div class="index-item"><div class="name">道琼斯</div><div class="price clr-up">52,485.03</div><div class="change clr-up">🔴+0.53%</div></div>
+      <div class="index-item"><div class="name">纳斯达克</div><div class="price clr-up">25,373.85</div><div class="change clr-up">🔴+0.99%</div></div>
+      <div class="index-item"><div class="name">标普500</div><div class="price clr-up">7,489.72</div><div class="change clr-up">🔴+0.70%</div></div>
+      <div class="index-item"><div class="name">恒生指数</div><div class="price clr-up">25,884.43</div><div class="change clr-up">🔴+0.10%</div></div>
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 成交额</td><td><strong>2.54万亿</strong></td><td>较前日放量1991亿</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong>~4600涨 / ~700跌</strong></td><td>涨跌比 6.5:1</td></tr>
+      <tr><td>🎯 涨停/跌停</td><td><strong>——家 / ——家</strong></td><td>市场情绪: 修复回暖</td></tr>
+      <tr><td>💰 主力资金</td><td><strong>净流入+240.8亿</strong></td><td>资金态度: 修复性回流</td></tr>
+      <tr><td>🌐 北向资金</td><td><strong>净卖出~42亿</strong></td><td>外资态度: 连续三日减持</td></tr>
+    </table>
+  </div>
+
+  <!-- 板块排行 -->
+  <div class="card">
+    <div class="card-title">🔥 板块涨跌排行 <span class="badge">Sector</span></div>
+    <table>
+      <thead><tr><th style="width:40%">🔴 领涨 TOP5</th><th style="width:20%">涨跌幅</th><th>领涨个股</th></tr></thead>
+      <tbody>
+        <tr><td>📢 广告营销</td><td class="clr-up">🔴+9.02%</td><td>易点天下+19.99%</td></tr>
+        <tr><td>💻 IT服务Ⅱ</td><td class="clr-up">🔴+6.31%</td><td>宏景科技+20.00%</td></tr>
+        <tr><td>📺 数字媒体</td><td class="clr-up">🔴+6.15%</td><td>值得买+15.16%</td></tr>
+        <tr><td>🤖 自动化设备</td><td class="clr-up">🔴+6.05%</td><td>绿的谐波+16.34%</td></tr>
+        <tr><td>🖥️ 软件开发</td><td class="clr-up">🔴+6.01%</td><td>福昕软件+20.00%</td></tr>
+      </tbody>
+    </table>
+    <hr class="divider">
+    <table>
+      <thead><tr><th style="width:40%">🟢 领跌 / 承压板块</th><th style="width:20%">涨跌幅</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>🏦 银行</td><td class="clr-down">承压</td><td>资金从银行流出转向科技成长</td></tr>
+        <tr><td>🛢️ 能源金属</td><td class="clr-down">承压</td><td>油价上行下游成本承压</td></tr>
+        <tr><td>🌾 农化制品</td><td class="clr-down">承压</td><td>周期板块调整</td></tr>
+        <tr><td>🛡️ 保险</td><td class="clr-down">承压</td><td>防御资金切换至成长</td></tr>
+      </tbody>
+    </table>
+    <hr class="divider">
+    <div style="font-size:13px;color:#666;margin-top:8px"><strong>概念板块领涨：</strong>词元概念+11.45% | Kimi概念+10.21% | 物理AI+9.26% | 谷歌概念+8.86% | AI营销+8.67%</div>
+  </div>
+
+  <!-- 资金流向 -->
+  <div class="card">
+    <div class="card-title">💧 资金流向 <span class="badge">Money Flow</span></div>
+    <table>
+      <thead><tr><th style="width:12%">方向</th><th style="width:38%">板块</th><th style="width:20%">净流入/出</th><th>解读</th></tr></thead>
+      <tbody>
+        <tr><td>💰</td><td>半导体</td><td class="clr-up">🔴+109.8亿</td><td>AI算力+存储链修复，倍量回流</td></tr>
+        <tr><td>💰</td><td>元件</td><td class="clr-up">🔴+99.3亿</td><td>PCB/MLCC全线反弹，资金抢筹</td></tr>
+        <tr><td>💰</td><td>通信设备</td><td class="clr-up">🔴+61.3亿</td><td>光模块/CPO跟随美股修复</td></tr>
+        <tr><td>💧</td><td>上证主力</td><td class="clr-up">🔴+240.8亿</td><td>7/31放量修复，主力资金回流</td></tr>
+        <tr><td>💧</td><td>北向资金</td><td class="clr-down">🟢-42亿</td><td>连续三日净流出，外资暂未回补</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 热点个股 -->
+  <div class="card">
+    <div class="card-title">🎯 热点个股 <span class="badge">Stocks</span></div>
+    <div class="stock-list" id="stockList">
+      <div class="stock-item"><span class="sname">📢 易点天下</span><span class="schange clr-up">🔴+19.99%</span></div>
+      <div class="stock-item"><span class="sname">📝 福昕软件</span><span class="schange clr-up">🔴+20.00%</span></div>
+      <div class="stock-item"><span class="sname">🤖 昆仑万维</span><span class="schange clr-up">🔴+20.00%</span></div>
+      <div class="stock-item"><span class="sname">💙 蓝色光标</span><span class="schange clr-up">🔴+19.98%</span></div>
+      <div class="stock-item"><span class="sname">📱 用友网络</span><span class="schange clr-up">🔴+10.03%</span></div>
+      <div class="stock-item"><span class="sname">💾 长鑫科技</span><span class="schange clr-up">🔴+2.08%</span></div>
+      <div class="stock-item"><span class="sname">📡 中际旭创</span><span class="schange clr-up">🔴+4.40%</span></div>
+      <div class="stock-item"><span class="sname">💻 金山办公</span><span class="schange clr-up">🔴+6.90%</span></div>
+      <div class="stock-item"><span class="sname">🤖 科大讯飞</span><span class="schange clr-up">🔴+5.89%</span></div>
+      <div class="stock-item"><span class="sname">🏭 工业富联</span><span class="schange clr-up">🔴+5.39%</span></div>
+      <div class="stock-item"><span class="sname">🍺 贵州茅台</span><span class="schange clr-down">🟢-0.82%</span></div>
+      <div class="stock-item"><span class="sname">🔋 宁德时代</span><span class="schange clr-down">🟢-1.64%</span></div>
+      <div class="stock-item"><span class="sname">us 亚马逊</span><span class="schange clr-up">🔴+15.24%</span></div>
+      <div class="stock-item"><span class="sname">us 苹果</span><span class="schange clr-down">🟢-7.08%</span></div>
+      <div class="stock-item"><span class="sname">🇰🇷 SK海力士</span><span class="schange clr-up">🔴+30%涨停</span></div>
+    </div>
+  </div>
+
+  <!-- 财经要闻 -->
+  <div class="card">
+    <div class="card-title">📰 财经要闻 <span class="badge">Headlines</span></div>
+    <div class="summary-banner" style="margin-bottom:12px">
+      <strong>📌 周末要闻速览：</strong><br>
+      <span>🔴 国常会核准4核电项目（8台机组，投资超1700亿）<br>
+      🔴 特朗普下令对伊朗新一轮打击，霍尔木兹海峡通行受阻<br>
+      🔴 韩国KOSPI暴涨17.91%，SK海力士涨停<br>
+      🔴 7月制造业PMI 49.2%回落至荣枯线下<br>
+      🔴 四部门联手健全金融机构治理</span>
+    </div>
+    <ul class="event-list">
+      <li><span class="ev-tag ev-critical">重磅</span><strong>国常会核准4个核电项目共8台机组</strong>——"十五五"首批核准，总投资超1700亿元，采用华龙一号/国和一号技术。中国核电、电投产融等直接受益。核电设备链（东方电气、佳电股份等）迎催化。</li>
+      <li><span class="ev-tag ev-critical">重磅</span><strong>特朗普下令对伊朗发动新一轮攻击</strong>——美官员称行动最早本周末开始，持续数天。伊朗宣布霍尔木兹海峡"无法正常通行"，美军中央司令部否认。布伦特原油突破91美元（+4.78%），WTI 7月累涨21.83%。中东风险溢价全面上升。</li>
+      <li><span class="ev-tag ev-critical">重磅</span><strong>韩国KOSPI暴涨17.91%创历史最大单日涨幅</strong>——SK海力士、三星电机均30cm涨停，三星电子+26.81%。外资回补空头+全球资金流向变化+悲观情绪修复。同日韩国收紧个股杠杆ETF交易规则，14只主要杠杆ETF成交骤降64.4%。</li>
+      <li><span class="ev-tag ev-important">宏观</span><strong>7月制造业PMI回落至49.2%</strong>——环比下降1.1个百分点，回落至荣枯线下方。非制造业PMI 49.0%，综合PMI 49.3%。但装备制造业PMI 51.4%、高技术制造业PMI 53.3%，新质生产力保持扩张。</li>
+      <li><span class="ev-tag ev-important">监管</span><strong>四部门联合发布22条措施健全金融机构治理</strong>——构建产业资本和金融资本"防火墙"，严禁违规跨业经营。分级分类实施差异化监管，严惩违法违规行为。金融监管再升级。</li>
+      <li><span class="ev-tag ev-important">产业</span><strong>个贷新规8月1日起实施</strong>——六大行集体公示综合融资成本上限。工农中建个人消费贷年化利率上限均6%，邮储/交行为12%。住房贷款利率上限为LPR+0.5%。</li>
+      <li><span class="ev-tag ev-important">市场</span><strong>7月A股ETF吸金超5000亿刷新单月纪录</strong>——连续6个交易日净流入，近两日净流入均超400亿。双创主题ETF为加仓主力。7月两融净卖出超366亿（7/30单日），杠杆资金与ETF持续博弈。</li>
+      <li><span class="ev-tag ev-info">国际</span><strong>美股7/31全线收高，亚马逊涨超15%</strong>——道指+0.53%，纳指+0.99%，标普+0.70%。亚马逊+15.24%（2012年来最大单日涨幅），谷歌+6.87%，微软+3.02%，英伟达+2.93%。苹果-7.08%分化严重。三大云商积压合同近1.7万亿美元，AI基建变现拐点确认。</li>
+      <li><span class="ev-tag ev-info">政策</span><strong>国家发改委抓紧研究制定扩大内需战略实施方案（2026-2030年）</strong>——7550亿中央预算内投资已基本下达完毕，加快8000亿新型政策性金融工具投放。"十五五"算力网建设将新增直接投资4万亿元。</li>
+      <li><span class="ev-tag ev-info">公司</span><strong>兆易创新拟10-20亿回购注销</strong>——富瀚微上半年净利预增1073%-1420%；宏桥控股拟定增不超120亿投新能源。爱丽家居9连板后8月3日起停牌核查。</li>
+    </ul>
+  </div>
+
+  <!-- 深度复盘 -->
+  <div class="card">
+    <div class="card-title">🔍 深度复盘 <span class="badge">Analysis</span></div>
+    <div style="font-size:14px;line-height:2">
+      <p><strong>📋 政策面（周末新进展）：</strong>四维度政策密集落地。①国常会核准4核电项目+十五五"六张网"建设方案，算力、电网、储能获万亿级资金倾斜，新基建主线清晰；②四部门22条金融机构治理新规，构建产业-金融资本防火墙，监管升级短期压制情绪但长期利好；③个贷新规实施，六大行公示利率上限，消费金融规范化；④国家发改委扩大内需战略实施方案（2026-2030）编制中，8000亿政策性金融工具加速投放。政策组合拳持续发力。</p>
+      <p><strong>💰 资金面：</strong>周五（7/31）放量至2.54万亿，主力资金净流入+240.8亿，半导体、元件、通信设备获集中回补。但7月两融累计净卖出超3082亿，北向资金连续三日净流出（单日-42亿），外资尚未回补。ETF端7月吸金超5000亿刷新纪录，双创主题ETF为加仓主力，机构资金与散户、外资形成明显多空分歧。兆易创新10-20亿回购注销，产业资本底部信号明确。</p>
+      <p><strong>🏭 产业面：</strong>AI/科技链全面修复。广告营销+9.02%、IT服务+6.31%、数字媒体+6.15%领涨，AI营销+Kimi概念+词元概念大爆发。半导体主力资金净流入+109.8亿（5日净流出-453.6亿后首次大幅回补）。核电核准利好设备链（东方电气/佳电股份/中核科技等）。光伏行业价格合规专项指导出手整治低价内卷，行业格局有望改善。</p>
+      <p><strong>🌍 外盘面：</strong>全球股市"疯狂星期五"——美股全线收高纳指+0.99%，亚马逊+15.24%创2012年来最大涨幅，谷歌+6.87%，微软+3.02%，三大云商AI资本开支暴力增长，积压合同近1.7万亿美元。韩国KOSPI暴涨17.91%创历史纪录，SK海力士涨停。但苹果-7.08%分化严重，中东局势升级（特朗普下令对伊朗新一轮打击，布伦特+4.78%突破91美元），美联储沃什考虑减少议息会议频率，外部不确定性交织。</p>
+    </div>
+  </div>
+
+  <!-- 后市展望 -->
+  <div class="card">
+    <div class="card-title">🔮 后市展望 <span class="badge">Outlook</span></div>
+    <div style="font-size:14px;line-height:2">
+      <p><strong>8月首周（8/3-8/7）行情预判：</strong>大概率"高开震荡、结构分化"。</p>
+      <p><strong>周一（8/3）关键变盘点：</strong>周末四重利好（核电核准+外盘暴涨+AI财报超预期+ETF资金持续入场）叠加上周五放量修复，周一高开概率较大。但需注意：①北向资金连续三日流出，外围越涨内资越撤的反常背离；②中东局势升级（霍尔木兹海峡通行受阻）推升油价，航空/航运/化工成本承压；③7月PMI回落至49.2%，经济复苏力度偏弱。预计高开后震荡分化，科技成长vs高股息蓝筹轮动。</p>
+      <p><strong>风格判断：</strong>AI/科技链修复延续，但需区分"真反弹"与"假修复"。有海外订单+自研技术的算力龙头（存储/光模块/半导体设备）和AI应用（广告营销/Kimi概念）优先受益。纯题材小票注意借反弹出货。核电设备链为新增催化，可关注。高股息银行/防御板块或面临资金分流压力。</p>
+      <p><strong>本周关键节点：</strong>8月上旬将陆续发布7月CPI/PPI及外贸数据；8月MLF续作及LPR报价中旬公布；关注中东局势演变（美伊冲突升级节奏）；美联储沃什议息会议规则调整进展。</p>
+      <p><strong>风险提示：</strong>建议半仓操作，攻守兼备配置。关注中东地缘升级、北向资金持续流出、7月经济数据不及预期三大风险。</p>
+    </div>
+  </div>
+
+  <!-- 多空逻辑 -->
+  <div class="card">
+    <div class="card-title">⚖️ 多空逻辑 <span class="badge">Bull vs Bear</span></div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+      <div style="background:#f0faf0;border-radius:10px;padding:14px;border-left:3px solid #27ae60">
+        <div style="font-weight:700;color:#27ae60;margin-bottom:6px">🐂 看多因素</div>
+        <ul style="padding-left:16px;line-height:1.8">
+          <li><strong>政策底明确：</strong>国常会核准核电+十五五"六张网"+四部门金融治理+扩大内需方案，四线政策组合拳密集发力</li>
+          <li><strong>外盘强势：</strong>美股齐涨（亚马逊+15%/谷歌+6.87%/微软+3%），AI基建变现拐点确认，全球科技回暖</li>
+          <li><strong>ETF资金持续入场：</strong>7月A股ETF吸金超5000亿创新高，双创主题ETF连续加仓，机构资金底部布局</li>
+          <li><strong>产业资本回购：</strong>兆易创新10-20亿回购注销+上百家企业回购增持，产业资本真金白银入场</li>
+          <li><strong>半导体资金回补：</strong>主力净流入+109.8亿，前期暴跌后首次大幅回流，超跌修复动能充足</li>
+        </ul>
+      </div>
+      <div style="background:#fff5f5;border-radius:10px;padding:14px;border-left:3px solid #e74c3c">
+        <div style="font-weight:700;color:#e74c3c;margin-bottom:6px">🐻 看空因素</div>
+        <ul style="padding-left:16px;line-height:1.8">
+          <li><strong>中东地缘升级：</strong>特朗普下令对伊朗新一轮打击，霍尔木兹海峡通行受阻，布伦特突破91美元，避险情绪升温</li>
+          <li><strong>7月PMI低于预期：</strong>49.2%回落至荣枯线下，经济复苏力度偏弱，基本面支撑不足</li>
+          <li><strong>北向资金持续流出：</strong>连续三日净减持，外围越涨外资越撤，A股核心资产承压</li>
+          <li><strong>两融加速撤退：</strong>7月累计净卖出超3000亿，杠杆资金持续离场，短线情绪修复需时间</li>
+          <li><strong>美联储变量：</strong>沃什考虑减少议息会议频率，9月中旬前敲定，货币政策不确定性上升</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  子叩 · 周末午盘速评 | 2026-08-01 周六 数据截至7/31收盘<br>
+  数据来源：stock-data-skill + 公开财经资讯 | 以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
