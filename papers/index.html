@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>论文精选索引</title></head>
+<body><h1>计算数学每日论文精选</h1><ul id="list"></ul>
+<script>
+const dates = [];
+dates.sort().reverse();
+const el = document.getElementById('list');
+dates.forEach(d => { const li = document.createElement('li'); li.innerHTML = `<a href="./${d}.html">${d}</a>`; el.appendChild(li); });
+</script></body></html>
