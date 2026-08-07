@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>📊 股市简报</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  
+  /* Header */
+  .header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);color:#fff;padding:32px 20px 26px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;top:-60%;left:-40%;width:180%;height:200%;background:radial-gradient(ellipse,rgba(255,255,255,.08) 0%,transparent 65%);pointer-events:none}
+  .header h1{font-size:26px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:#fff;position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .header .sub{font-size:13px;opacity:.85;color:#e0e7ff;margin-bottom:10px;position:relative;z-index:1}
+  .header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1}
+  .tag{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;color:#fff}
+  .tag-red{background:#ef4444}.tag-green{background:#22c55e}.tag-orange{background:#f59e0b}.tag-blue{background:#60a5fa}.tag-gray{background:rgba(255,255,255,.2)}
+  
+  .container{max-width:860px;margin:0 auto;padding:16px 12px}
+  
+  /* Cards */
+  .card{background:#fff;border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8eaed}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px;color:#111827}
+  .card-title .badge{font-size:11px;padding:2px 10px;border-radius:10px;background:#eef2ff;color:#4f46e5;font-weight:500}
+  
+  /* 核心速览 */
+  .summary-banner{background:linear-gradient(135deg,#fefce8,#fffbeb);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f59e0b;font-size:14px;line-height:1.9;color:#1f2937}
+  .summary-banner strong{color:#d97706}
+  
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .index-item{background:#f8fafc;border-radius:10px;padding:12px 14px;border:1px solid #e5e7eb;transition:background .2s}
+  .index-item:hover{background:#f1f5f9}
+  .index-item .name{font-size:12px;color:#6b7280;margin-bottom:3px;font-weight:500}
+  .index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px;color:#111827}
+  .index-item .change{font-size:14px;font-weight:600}
+  .clr-up{color:#dc2626}.clr-down{color:#16a34a}
+  
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e5e7eb}
+  tbody td{padding:12px;border-bottom:1px solid #f3f4f6;vertical-align:middle;color:#374151}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+  
+  /* 涨跌幅进度条 */
+  .bar-wrapper{display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:3px;min-width:4px;transition:width .3s}
+  .bar-up{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  .bar-down{background:linear-gradient(90deg,#22c55e,#16a34a)}
+  .bar-label{font-weight:600;white-space:nowrap;min-width:50px;text-align:right;color:#374151}
+  
+  /* 要闻列表 - 优化大段文字 */
+  .event-list{list-style:none}
+  .event-list li{padding:14px 0;border-bottom:1px solid #f3f4f6;font-size:14.5px;line-height:1.9;color:#374151;text-align:justify}
+  .event-list li:last-child{border-bottom:none}
+  .event-list li strong{color:#111827;font-weight:700}
+  .event-list li .ev-desc{margin-top:4px;color:#4b5563}
+  .ev-tag{display:inline-block;padding:2px 10px;border-radius:5px;font-size:11px;font-weight:700;margin-right:8px;vertical-align:middle;color:#fff;letter-spacing:.5px}
+  .ev-critical{background:#dc2626}.ev-important{background:#f59e0b}.ev-info{background:#3b82f6}.ev-success{background:#16a34a}.ev-purple{background:#7c3aed}
+  
+  /* 热点个股 */
+  .stock-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+  .stock-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;font-size:13px}
+  .stock-item .sname{font-weight:600;color:#111827}
+  .stock-item .schange{font-weight:600;font-size:13px}
+  
+  /* 多空逻辑 */
+  .debate{display:flex;flex-direction:column;gap:12px;font-size:13px}
+  .debate-bull{background:#f0fdf4;border-radius:10px;padding:14px 16px;border-left:3px solid #22c55e}
+  .debate-bear{background:#fef2f2;border-radius:10px;padding:14px 16px;border-left:3px solid #ef4444}
+  .debate-title{font-weight:700;margin-bottom:6px;color:#16a34a}
+  .debate-bear .debate-title{color:#dc2626}
+  .debate ul{padding-left:16px;line-height:1.9;color:#374151}
+  
+  /* 大段文字排版 - 深度复盘/后市展望 */
+  .analysis-box{font-size:14.5px;line-height:2.0;color:#374151;text-align:justify}
+  .analysis-box p{margin-bottom:14px}
+  .analysis-box p:last-child{margin-bottom:0}
+  .analysis-box .tag{display:inline-block;padding:3px 12px;border-radius:6px;font-size:11.5px;font-weight:700;margin-right:8px;vertical-align:middle;letter-spacing:.5px}
+  .tag-policy{background:#ede9fe;color:#6d28d9}
+  .tag-fund{background:#dbeafe;color:#1d4ed8}
+  .tag-industry{background:#fef3c7;color:#b45309}
+  .tag-global{background:#dcfce7;color:#15803d}
+  .analysis-box strong{color:#111827;font-weight:700}
+  .analysis-box .hl{color:#dc2626;font-weight:700}
+  .analysis-box .hl-blue{color:#1d4ed8;font-weight:700}
+  .analysis-box .hl-green{color:#15803d;font-weight:700}
+  
+  /* 分隔线 */
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  
+  /* Footer */
+  .footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#9ca3af;line-height:1.8}
+  
+  /* ===== 手机端适配 ===== */
+  @media(max-width:640px){
+    body{font-size:14.5px}
+    .header{padding:24px 16px 20px}
+    .header h1{font-size:22px}
+    .container{padding:12px 8px}
+    .card{padding:16px 14px;border-radius:12px;margin-bottom:12px}
+    .card-title{font-size:16px;margin-bottom:12px;padding-bottom:10px}
+    .index-grid{grid-template-columns:1fr 1fr;gap:8px}
+    .stock-list{grid-template-columns:1fr}
+    .analysis-box{font-size:14px;line-height:1.9}
+    .analysis-box p{margin-bottom:12px}
+    .event-list li{font-size:14px;line-height:1.8;padding:12px 0}
+    table{font-size:13px}
+    thead th{padding:8px 8px;font-size:11px}
+    tbody td{padding:10px 8px}
+    .summary-banner{font-size:13.5px;line-height:1.8;padding:14px 16px}
+    .debate{font-size:12.5px}
+    .debate ul{line-height:1.8;padding-left:14px}
+    .bar-label{min-width:44px;font-size:12px}
+    .debate-bull,.debate-bear{padding:12px 14px}
+  }
+  @media(max-width:380px){
+    body{font-size:14px}
+    .index-grid{grid-template-columns:1fr 1fr}
+    .card{padding:14px 12px}
+  }
+</style>
+</head>
+<body>
+
+<div style="background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);padding:36px 20px 30px;text-align:center;">
+  <h1 style="font-size:26px;font-weight:800;color:#ffffff;margin:0 0 8px 0;letter-spacing:1px;">📊 收盘市场简报</h1>
+  <div style="font-size:13px;color:#e0e7ff;margin-bottom:12px;">2026年08月07日 周五 · 子叩股市简报</div>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#ef4444;color:#ffffff;">🔴涨</span>
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#22c55e;color:#ffffff;">🟢跌</span>
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#f59e0b;color:#ffffff;">⚠️ 市场提示</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心速览 -->
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>沪指低开高走放量收涨1.02%站上3940点，科创50大涨2.51%，医药与AI硬件双主线共振，74股涨停<br>
+      <strong>🎯 核心判断：</strong>震荡筑底后的反弹修复期，医药与AI硬件双主线，科技反弹主线确认<br>
+      <strong>⚠️ 关键风险：</strong>今晚非农数据、高位连板分歧、CPO禁令风险、中报爆雷
+    </div>
+    <div class="index-grid">
+      <div class="index-item"><div class="name">上证指数</div><div class="price">3,940.04</div><div class="change clr-up">🔴 +1.02%</div></div>
+<div class="index-item"><div class="name">深证成指</div><div class="price">14,311.01</div><div class="change clr-up">🔴 +1.42%</div></div>
+<div class="index-item"><div class="name">创业板指</div><div class="price">3,563.12</div><div class="change clr-up">🔴 +1.35%</div></div>
+<div class="index-item"><div class="name">科创50</div><div class="price">1,744.02</div><div class="change clr-up">🔴 +2.51%</div></div>
+<div class="index-item"><div class="name">沪深300</div><div class="price">4,694.44</div><div class="change clr-up">🔴 +0.93%</div></div>
+<div class="index-item"><div class="name">上证50</div><div class="price">2,960.42</div><div class="change clr-up">🔴 +1.38%</div></div>
+<div class="index-item"><div class="name">中证500</div><div class="price">7,980.12</div><div class="change clr-up">🔴 +1.93%</div></div>
+<div class="index-item"><div class="name">北证50</div><div class="price">1,134.24</div><div class="change clr-up">🔴 +1.01%</div></div>
+
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 成交额</td><td><strong style="color:#111827">2.68万亿</strong></td><td style="color:#6b7280">较前日 +1356亿</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong style="color:#111827">超2800涨 / 约2530跌</strong></td><td style="color:#6b7280">涨跌比 1:X</td></tr>
+      <tr><td>🎯 涨停/跌停</td><td><strong style="color:#111827">74家 / 4家</strong></td><td style="color:#6b7280">市场情绪: 回暖</td></tr>
+      <tr><td>💰 主力资金</td><td><strong style="color:#111827">净流入约226亿</strong></td><td style="color:#6b7280">资金态度: 积极</td></tr>
+      <tr><td>🌐 北向资金</td><td><strong style="color:#111827">小幅净流入</strong></td><td style="color:#6b7280">外资态度: 加仓硬科技</td></tr>
+    </table>
+  </div>
+
+  <!-- 板块排行 -->
+  <div class="card">
+    <div class="card-title">🔥 板块涨跌排行 <span class="badge">Sector</span></div>
+    <table>
+      <thead><tr><th style="width:45%">🟢 领涨 TOP5</th><th style="width:25%">涨跌幅</th><th>领涨个股</th></tr></thead>
+      <tbody><tr><td>医疗服务</td><td><span class="clr-up">🔴 +8.40%</span></td><td>博腾股份 +20.02%</td></tr>
+<tr><td>玻璃玻纤</td><td><span class="clr-up">🔴 +7.11%</span></td><td>中材科技 +9.78%</td></tr>
+<tr><td>元件</td><td><span class="clr-up">🔴 +6.74%</span></td><td>一博科技 +20.00%</td></tr>
+<tr><td>生物制品</td><td><span class="clr-up">🔴 +6.06%</span></td><td>近岸蛋白 +20.01%</td></tr>
+<tr><td>非金属材料</td><td><span class="clr-up">🔴 +5.59%</span></td><td>联瑞新材 +11.48%</td></tr>
+<tr><td>化学制药</td><td><span class="clr-up">🔴 +5.21%</span></td><td>贝达药业 +14.37%</td></tr>
+</tbody>
+    </table>
+    <hr class="divider">
+    <table>
+      <thead><tr><th style="width:45%">🔴 领跌 TOP5</th><th style="width:25%">涨跌幅</th><th>说明</th></tr></thead>
+      <tbody><tr><td>数字货币</td><td><span class="clr-down">🟢 -3%+</span></td><td>吉大正元/高伟达/天融信领跌</td></tr>
+<tr><td>软件开发</td><td><span class="clr-down">🟢 -2%+</span></td><td>AI应用概念调整</td></tr>
+<tr><td>游戏</td><td><span class="clr-down">🟢 -2%+</span></td><td>大晟文化/凯撒文化盘中跌停</td></tr>
+<tr><td>家用电器</td><td><span class="clr-down">🟢 -1%+</span></td><td>辰奕智能/星光股份跌超3%</td></tr>
+<tr><td>房地产</td><td><span class="clr-down">🟢 -1%+</span></td><td>深物业A/电子城跌超3%</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <!-- 资金流向 -->
+  <div class="card">
+    <div class="card-title">💧 资金流向 <span class="badge">Money Flow</span></div>
+    <table>
+      <thead><tr><th style="width:12%">方向</th><th style="width:38%">板块</th><th style="width:20%">净流入/出</th><th>解读</th></tr></thead>
+      <tbody><tr><td>🔴</td><td>元件</td><td><strong>+118.5亿</strong></td><td>PCB/MLCC景气，57/60上涨</td></tr>
+<tr><td>🔴</td><td>半导体</td><td><strong>+106.7亿</strong></td><td>存储/先进封装资金回流</td></tr>
+<tr><td>🔴</td><td>化学制药</td><td><strong>+40.8亿</strong></td><td>创新药业绩兑现</td></tr>
+<tr><td>💧</td><td>上证主力</td><td><strong>+226亿</strong></td><td>净流入，资金态度积极</td></tr>
+<tr><td>💧</td><td>北向资金</td><td><strong>小幅净流入</strong></td><td>加仓硬科技与医药龙头</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <!-- 热点个股 -->
+  <div class="card">
+    <div class="card-title">🎯 热点个股 <span class="badge">Stocks</span></div>
+    <div class="stock-list"><div class="stock-item"><span class="sname">铜冠铜箔</span><span class="schange clr-up">🔴 +16.98%</span></div>
+<div class="stock-item"><span class="sname">胜宏科技</span><span class="schange clr-up">🔴 +12.01%</span></div>
+<div class="stock-item"><span class="sname">云南锗业</span><span class="schange clr-up">🔴 +10.00%</span></div>
+<div class="stock-item"><span class="sname">有研新材</span><span class="schange clr-up">🔴 +10.00%</span></div>
+<div class="stock-item"><span class="sname">光迅科技</span><span class="schange clr-up">🔴 +10.00%</span></div>
+<div class="stock-item"><span class="sname">生益科技</span><span class="schange clr-up">🔴 +10.00%</span></div>
+<div class="stock-item"><span class="sname">景旺电子</span><span class="schange clr-up">🔴 +10.00%</span></div>
+<div class="stock-item"><span class="sname">华银电力</span><span class="schange clr-up">🔴 +10.06%</span></div>
+<div class="stock-item"><span class="sname">药明康德</span><span class="schange clr-up">🔴 +8.49%</span></div>
+<div class="stock-item"><span class="sname">兆易创新</span><span class="schange clr-up">🔴 +8.32%</span></div>
+<div class="stock-item"><span class="sname">中国巨石</span><span class="schange clr-up">🔴 +8.83%</span></div>
+<div class="stock-item"><span class="sname">恒瑞医药</span><span class="schange clr-up">🔴 +4.82%</span></div>
+<div class="stock-item"><span class="sname">中际旭创</span><span class="schange clr-down">🟢 -3.68%</span></div>
+<div class="stock-item"><span class="sname">新易盛</span><span class="schange clr-down">🟢 -0.22%</span></div>
+<div class="stock-item"><span class="sname">C津富</span><span class="schange clr-down">🟢 -17.98%</span></div>
+<div class="stock-item"><span class="sname">工业富联</span><span class="schange clr-down">🟢 -0.13%</span></div>
+</div>
+  </div>
+
+  <!-- 财经要闻 -->
+  <div class="card">
+    <div class="card-title">📰 财经要闻 <span class="badge">Headlines</span></div>
+    <div class="summary-banner" style="margin-bottom:12px">
+      <strong>📌 今日要闻速览：</strong><br>
+      ①医药生物领涨两市，创新药/CRO掀涨停潮 ②PCB爆发，高盛上调AI服务器PCB/CCL预测 ③稀土/小金属走强，中美反制+刚果金禁铜钴出口 ④央行定调降准降息仍在工具箱 ⑤特朗普对多晶硅加征15%关税 ⑥伊朗霍尔木兹草案油价大涨 ⑦美股收跌存储芯片大跌 ⑧今晚非农数据为关键变量 ⑨私募仓位创近四年新高 ⑩上交所二季度受理54家IPO
+    </div>
+    <ul class="event-list"><li><span class="ev-tag ev-critical">重磅</span><strong>医药生物领涨两市 创新药/CRO掀涨停潮</strong><div class="ev-desc">医药生物板块领涨，毕得医药、近岸蛋白、百普赛斯、药康生物、贝达药业等近50股涨停或涨超10%，百花医药4连板。催化：医保目录调整初步审查通过率92%创历史新高、专利期内创新药不纳入集采、药明康德半年报扣非净利+89.39%并上调全年指引至35%-39%。医药板块政策+业绩+资金三重共振，创年内最大单日涨幅。</div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>PCB概念爆发 高盛上调AI服务器PCB/CCL预测</strong><div class="ev-desc">PCB概念强势，一博科技、宝鼎科技、景旺电子、生益电子等十余股涨停，胜宏科技、铜冠铜箔涨幅居前。高盛大幅上调AI服务器PCB和CCL预测，2028年市场规模将达840亿和480亿美元。AI服务器、算力基建加速推进，高多层板、高阶HDI、高速高频PCB高端需求持续提升。</div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>稀土/小金属走强 中美反制+刚果金禁铜钴出口</strong><div class="ev-desc">有色金属表现抢眼，云南锗业、江南新材、中国稀土等涨停，中科磁业、寒锐钴业涨超6%。催化：中美反制+刚果（金）铜精矿出口禁令，中信证券研报称禁令或推动铜价加速冲击15000美元/吨以上，铜板块迎估值和业绩共振上涨。</div></li>
+<li><span class="ev-tag ev-important">政策</span><strong>央行定调：降准降息仍在工具箱 相机抉择</strong><div class="ev-desc">人民银行2026年下半年工作会议明确，降准、降息仍在政策工具箱内，操作上更加注重相机抉择，把握好实施时点与力度；结构性工具持续加码，聚焦科技创新、新质生产力、中小微企业。三季度政府债券发行进入高峰期，央行有望灵活运用降准、公开市场操作、国债买卖等工具平抑资金面扰动。</div></li>
+<li><span class="ev-tag ev-purple">海外</span><strong>特朗普对进口多晶硅加征15%关税</strong><div class="ev-desc">美国总统特朗普8月6日签署行政令，依据《1962年贸易扩展法》第232条，对进口多晶硅及其衍生产品采取最低进口价格和额外关税措施，加征15%从价关税，自2026年12月4日生效。同时考虑将征收时间推迟90-120天，以给可再生能源企业留出进口窗口。</div></li>
+<li><span class="ev-tag ev-purple">海外</span><strong>伊朗霍尔木兹海峡草案 油价大涨</strong><div class="ev-desc">伊朗官方公布霍尔木兹海峡管理战略计划初步草案，拟禁止美以船只通行并对违规船只处货值20%罚款。消息触发原油暴涨，WTI涨4%报78.23美元、布油涨4.57%报83.08美元。市场对中东和平谈判乐观预期被修正，为海峡通航受限这一黑天鹅重新定价。</div></li>
+<li><span class="ev-tag ev-purple">海外</span><strong>美股三大指数收跌 存储芯片大跌</strong><div class="ev-desc">隔夜美股道指跌0.85%终结5日连涨，标普500跌0.18%，纳指跌0.06%。存储芯片股大跌，西部数据跌超13%、闪迪跌6.8%、SK海力士跌约5%，AI应用软件股重挫（Datadog、AppLovin跌超19%）。但硬件端坚挺，微软涨超2%创去年11月以来新高，SpaceX涨逾6%市值重回1.5万亿美元上方。</div></li>
+<li><span class="ev-tag ev-success">资金</span><strong>今晚非农数据为关键变量</strong><div class="ev-desc">北京时间8月7日20:30公布7月非农就业报告，市场预期新增8.3万人（前值5.7万）、失业率4.2%。此前ADP小非农仅4.4万人为2026年最低。CME美联储观察显示9月加息25BP概率63.2%。若非农超预期则加息预期升温利空，不及预期则降息预期升温利好风险资产。</div></li>
+<li><span class="ev-tag ev-info">产业</span><strong>私募仓位创近四年新高</strong><div class="ev-desc">自6月26日以来股票私募连续4周加仓，仓位指数累计上涨2.12%，截至7月24日攀升至84.12%创近220周新高，满仓私募占比高达70.43%。回溯历史，上一次突破84%高位还要追溯到2022年4月初。</div></li>
+<li><span class="ev-tag ev-info">产业</span><strong>上交所二季度受理54家IPO 环比增8倍</strong><div class="ev-desc">上交所发行上市审核动态显示，二季度共计受理54家IPO，环比增长8倍；受理43家再融资申请，环比增长72%；受理15家并购重组申请，环比增长50%。同时强化现场督导部署，延续注册制下严把入口关的审核态势。</div></li>
+</ul>
+  </div>
+
+  <!-- 深度复盘 -->
+  <div class="card">
+    <div class="card-title">🔍 深度复盘 <span class="badge">Analysis</span></div>
+    <div class="analysis-box"><p><span class="tag tag-policy">政策面</span>今日政策信号密集：央行下半年工作会议定调降准降息仍在工具箱、相机抉择，三季度政府债券发行高峰期有望灵活运用多种工具平抑资金面扰动；特朗普对进口多晶硅加征15%关税（12月4日生效）强化国产替代逻辑；工信部印发民爆行业十五五规划。政策端从流动性、产业制度、贸易反制三线发力，为市场提供坚实支撑，医药与资源品获政策催化。<p><span class="tag tag-fund">资金面</span>两市成交2.68万亿，较前日放量1356亿，量价齐升反弹质量高。主力资金净流入约226亿，资金态度积极。资金明显向医药与硬科技集中：元件+118.5亿、半导体+106.7亿、化学制药+40.8亿获净流入；北向资金小幅净流入，加仓硬科技与医药龙头，高低切换明确。私募仓位创近四年新高（84.12%），机构做多意愿强烈。<p><span class="tag tag-industry">产业面</span>医药与AI硬件双主线共振：医药生物领涨两市，创新药/CRO掀涨停潮（医保目录通过率92%创新高+药明康德业绩超预期）；PCB/铜箔/覆铜板掀涨停潮（高盛上调AI服务器PCB/CCL预测）；稀土/小金属走强（中美反制+刚果金禁铜钴出口）；6G/通信延续强势（通宇通讯5天4板）。产业催化密集，科技反弹主线确认。<p><span class="tag tag-global">外盘面</span>隔夜美股三大指数收跌，道指-0.85%终结5日连涨，存储芯片大跌（西部数据-13%、闪迪-6.8%），AI应用软件股重挫。伊朗霍尔木兹海峡草案触发油价大涨（WTI+4%）。今晚20:30美国非农数据为关键变量，市场预期新增8.3万人，CME显示9月加息25BP概率63.2%。外围风险偏好平稳，但非农数据落地前市场观望情绪浓。</div>
+  </div>
+
+  <!-- 后市展望 -->
+  <div class="card">
+    <div class="card-title">🔮 后市展望 <span class="badge">Outlook</span></div>
+    <div class="analysis-box"><p><strong>节奏判断：</strong>沪指低开高走放量收涨1.02%站上3940点，科创50大涨2.51%连续三天上涨（+4.78%→+0.45%→+2.51%），科技反弹主线确认。市场处于震荡筑底后的反弹修复期，量价齐升反弹质量高，但较难重回全面普涨，结构性分化将加剧。短期反弹更多具有超跌修复特征，前期跌幅大、筹码出清充分的个股在反弹初期相对占优。<p><strong>关键观察点：</strong>①今晚非农数据（20:30公布）为最大变量，超预期则加息预期升温利空，不及预期则利好风险资产；②沪指上方压力3950-3980，下方支撑3900-3920，强支撑3870；③量能能否维持2.6万亿以上，是反弹持续性的核心变量；④8月9日中国7月CPI/PPI数据；⑤中报密集披露期+解禁压力。<p><strong>主线方向：</strong>①创新药/CRO/医疗服务——政策+业绩双催化，强者恒强，低位中药/器械补涨；②PCB/铜箔/覆铜板——高盛上调预测，景气度高+涨停潮；③稀土/小金属/资源品——中美反制+刚果金禁铜钴出口；④科创50方向——科技反弹主线，半导体/先进封装/存储；⑤6G/通信——延续强势。<p><strong>风险提示：</strong>⚠️今晚非农数据为关键变量，控制仓位过周末；⚠️高位连板股分歧（宝鼎科技6天5板）；⚠️CPO/光模块禁令风险未完全消化；⚠️中报密集披露期个股爆雷风险；⚠️板块轮动过快，追高风险大。</div>
+  </div>
+
+  <!-- 多空逻辑 -->
+  <div class="card">
+    <div class="card-title">⚖️ 多空逻辑 <span class="badge">Bull vs Bear</span></div>
+    <div class="debate">
+      <div class="debate-bull"><div class="debate-title">🐂 看多因素</div><ul><li>央行定调降准降息仍在工具箱，流动性宽松基调夯实</li>
+<li>医药生物领涨两市，政策+业绩双催化，创新药/CRO掀涨停潮</li>
+<li>PCB爆发，高盛上调AI服务器PCB/CCL预测，景气度高</li>
+<li>科创50大涨2.51%连续三天上涨，科技反弹主线确认</li>
+<li>成交2.68万亿放量1356亿，量价齐升反弹质量高</li>
+<li>主力净流入约226亿，私募仓位创近四年新高，机构做多意愿强</li>
+<li>稀土/小金属走强，中美反制+刚果金禁铜钴出口</li>
+<li>跌停仅4只，市场恐慌情绪极低，做多意愿强烈</li>
+</ul></div>
+      <div class="debate-bear"><div class="debate-title">🐻 看空因素</div><ul><li>今晚非农数据为关键变量，超预期则加息预期升温利空</li>
+<li>高位连板股分歧加大（宝鼎科技6天5板，注意止盈）</li>
+<li>CPO/光模块禁令风险未完全消化</li>
+<li>美股存储芯片大跌（西部数据-13%），外销型科技股短期承压</li>
+<li>数字货币/游戏/AI应用概念退潮，题材轮动过快</li>
+<li>中报密集披露期个股爆雷风险</li>
+<li>伊朗霍尔木兹海峡地缘风险，油价大涨推升通胀预期</li>
+<li>沪指逼近3950压力位，上方套牢盘压力</li>
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  子叩 · 每日股市简报 | 数据来源：stock-data-skill + 公开财经资讯（8/7收盘）<br>
+  以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
