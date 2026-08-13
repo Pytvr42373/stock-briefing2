@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>📊 股市简报</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  
+  /* Header */
+  .header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);color:#fff;padding:32px 20px 26px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;top:-60%;left:-40%;width:180%;height:200%;background:radial-gradient(ellipse,rgba(255,255,255,.08) 0%,transparent 65%);pointer-events:none}
+  .header h1{font-size:26px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:#fff;position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .header .sub{font-size:13px;opacity:.85;color:#e0e7ff;margin-bottom:10px;position:relative;z-index:1}
+  .header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1}
+  .tag{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;color:#fff}
+  .tag-red{background:#ef4444}.tag-green{background:#22c55e}.tag-orange{background:#f59e0b}.tag-blue{background:#60a5fa}.tag-gray{background:rgba(255,255,255,.2)}
+  
+  .container{max-width:860px;margin:0 auto;padding:16px 12px}
+  
+  /* Cards */
+  .card{background:#fff;border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8eaed}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px;color:#111827}
+  .card-title .badge{font-size:11px;padding:2px 10px;border-radius:10px;background:#eef2ff;color:#4f46e5;font-weight:500}
+  
+  /* 核心速览 */
+  .summary-banner{background:linear-gradient(135deg,#fefce8,#fffbeb);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f59e0b;font-size:14px;line-height:1.9;color:#1f2937}
+  .summary-banner strong{color:#d97706}
+  
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .index-item{background:#f8fafc;border-radius:10px;padding:12px 14px;border:1px solid #e5e7eb;transition:background .2s}
+  .index-item:hover{background:#f1f5f9}
+  .index-item .name{font-size:12px;color:#6b7280;margin-bottom:3px;font-weight:500}
+  .index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px;color:#111827}
+  .index-item .change{font-size:14px;font-weight:600}
+  .clr-up{color:#dc2626}.clr-down{color:#16a34a}
+  
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e5e7eb}
+  tbody td{padding:12px;border-bottom:1px solid #f3f4f6;vertical-align:middle;color:#374151}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+  
+  /* 涨跌幅进度条 */
+  .bar-wrapper{display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:3px;min-width:4px;transition:width .3s}
+  .bar-up{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  .bar-down{background:linear-gradient(90deg,#22c55e,#16a34a)}
+  .bar-label{font-weight:600;white-space:nowrap;min-width:50px;text-align:right;color:#374151}
+  
+  /* 要闻列表 - 优化大段文字 */
+  .event-list{list-style:none}
+  .event-list li{padding:14px 0;border-bottom:1px solid #f3f4f6;font-size:14.5px;line-height:1.9;color:#374151;text-align:justify}
+  .event-list li:last-child{border-bottom:none}
+  .event-list li strong{color:#111827;font-weight:700}
+  .event-list li .ev-desc{margin-top:4px;color:#4b5563}
+  .ev-tag{display:inline-block;padding:2px 10px;border-radius:5px;font-size:11px;font-weight:700;margin-right:8px;vertical-align:middle;color:#fff;letter-spacing:.5px}
+  .ev-critical{background:#dc2626}.ev-important{background:#f59e0b}.ev-info{background:#3b82f6}.ev-success{background:#16a34a}.ev-purple{background:#7c3aed}
+  
+  /* 热点个股 */
+  .stock-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+  .stock-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;font-size:13px}
+  .stock-item .sname{font-weight:600;color:#111827}
+  .stock-item .schange{font-weight:600;font-size:13px}
+  
+  /* 多空逻辑 */
+  .debate{display:flex;flex-direction:column;gap:12px;font-size:13px}
+  .debate-bull{background:#f0fdf4;border-radius:10px;padding:14px 16px;border-left:3px solid #22c55e}
+  .debate-bear{background:#fef2f2;border-radius:10px;padding:14px 16px;border-left:3px solid #ef4444}
+  .debate-title{font-weight:700;margin-bottom:6px;color:#16a34a}
+  .debate-bear .debate-title{color:#dc2626}
+  .debate ul{padding-left:16px;line-height:1.9;color:#374151}
+  
+  /* 大段文字排版 - 深度复盘/后市展望 */
+  .analysis-box{font-size:14.5px;line-height:2.0;color:#374151;text-align:justify}
+  .analysis-box p{margin-bottom:14px}
+  .analysis-box p:last-child{margin-bottom:0}
+  .analysis-box .tag{display:inline-block;padding:3px 12px;border-radius:6px;font-size:11.5px;font-weight:700;margin-right:8px;vertical-align:middle;letter-spacing:.5px}
+  .tag-policy{background:#ede9fe;color:#6d28d9}
+  .tag-fund{background:#dbeafe;color:#1d4ed8}
+  .tag-industry{background:#fef3c7;color:#b45309}
+  .tag-global{background:#dcfce7;color:#15803d}
+  .analysis-box strong{color:#111827;font-weight:700}
+  .analysis-box .hl{color:#dc2626;font-weight:700}
+  .analysis-box .hl-blue{color:#1d4ed8;font-weight:700}
+  .analysis-box .hl-green{color:#15803d;font-weight:700}
+  
+  /* 分隔线 */
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  
+  /* Footer */
+  .footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#9ca3af;line-height:1.8}
+  
+  /* ===== 手机端适配 ===== */
+  @media(max-width:640px){
+    body{font-size:14.5px}
+    .header{padding:24px 16px 20px}
+    .header h1{font-size:22px}
+    .container{padding:12px 8px}
+    .card{padding:16px 14px;border-radius:12px;margin-bottom:12px}
+    .card-title{font-size:16px;margin-bottom:12px;padding-bottom:10px}
+    .index-grid{grid-template-columns:1fr 1fr;gap:8px}
+    .stock-list{grid-template-columns:1fr}
+    .analysis-box{font-size:14px;line-height:1.9}
+    .analysis-box p{margin-bottom:12px}
+    .event-list li{font-size:14px;line-height:1.8;padding:12px 0}
+    table{font-size:13px}
+    thead th{padding:8px 8px;font-size:11px}
+    tbody td{padding:10px 8px}
+    .summary-banner{font-size:13.5px;line-height:1.8;padding:14px 16px}
+    .debate{font-size:12.5px}
+    .debate ul{line-height:1.8;padding-left:14px}
+    .bar-label{min-width:44px;font-size:12px}
+    .debate-bull,.debate-bear{padding:12px 14px}
+  }
+  @media(max-width:380px){
+    body{font-size:14px}
+    .index-grid{grid-template-columns:1fr 1fr}
+    .card{padding:14px 12px}
+  }
+</style>
+</head>
+<body>
+
+<div style="background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);padding:36px 20px 30px;text-align:center;">
+  <h1 style="font-size:26px;font-weight:800;color:#ffffff;margin:0 0 8px 0;letter-spacing:1px;">📊 盘前市场简报</h1>
+  <div style="font-size:13px;color:#e0e7ff;margin-bottom:12px;">2026年8月13日 周四 · 子叩股市简报</div>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#ef4444;color:#ffffff;">🔴涨</span>
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#22c55e;color:#ffffff;">🟢跌</span>
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#f59e0b;color:#ffffff;">⚠️ 市场提示</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心速览 -->
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>8/13周四盘前。A股周三(8/12)三大指数低开高走全线收红：沪指+0.32%报3946.68、创业板指+1.49%，两市成交2.15万亿缩量1686亿，4128只上涨、96涨停0跌停，属缩量普涨的修复性反弹，CPO/光通信+地产双主线引领。隔夜美股AI硬件全线爆发——存储(SK海力士+9%)、光通信(Lumentum+13.6%)、AI云(CoreWeave+19%)集体大涨，叠加美国7月CPI温和缓解加息压力，A股科技成长链今日有望共振高开。<br><strong>🎯 核心判断：</strong>央行Q2货币政策报告定调"保持流动性充裕+谋划增量政策+加大逆周期调节"，8/14、17-19连续4日隔夜逆回购每日6000亿定向放水；腾讯Q2资本开支528-593亿大超预期，利好国产算力/腾讯云链；长江存储NAND份额首进前三。今日存储/半导体/光通信/算力链大概率高开走强，关注能否放量突破沪指3968-3983压力区。核心逻辑是"流动性呵护+AI硬件外盘共振"，但缩量普涨需放量确认。<br><strong>⚠️ 关键风险：</strong>两市成交缩量1686亿至2.15万亿，存量博弈、增量不足；隔夜中概股金龙指数-2.37%、腾讯ADR-5.44%，外资情绪降温；Coherent盘后-5%、Cerebras盘后-17%，高开需防AI硬件兑现回落；美国10年期国债收益率4.683%创2007年新高压制估值；百花医药/传智教育遭监管提示，高位连板情绪或降温。
+    </div>
+    <div class="index-grid">
+      <div class="index-item"><div class="name">上证指数</div><div class="price">3,946.68</div><div class="change clr-up">🔴 +0.32%</div></div>
+<div class="index-item"><div class="name">深证成指</div><div class="price">14,414.43</div><div class="change clr-up">🔴 +1.09%</div></div>
+<div class="index-item"><div class="name">创业板指</div><div class="price">3,602.08</div><div class="change clr-up">🔴 +1.49%</div></div>
+<div class="index-item"><div class="name">科创50</div><div class="price">1,736.99</div><div class="change clr-up">🔴 +1.61%</div></div>
+<div class="index-item"><div class="name">沪深300</div><div class="price">4,690.92</div><div class="change clr-up">🔴 +0.58%</div></div>
+
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 成交额</td><td><strong style="color:#111827">2.15万亿</strong></td><td style="color:#6b7280">较前日 -1686亿（缩量）</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong style="color:#111827">4128涨 / 1280跌</strong></td><td style="color:#6b7280">缩量普涨</td></tr>
+      <tr><td>🎯 涨停/跌停</td><td><strong style="color:#111827">96家 / 0家</strong></td><td style="color:#6b7280">赚钱效应回暖</td></tr>
+      <tr><td>💰 主力资金</td><td><strong style="color:#111827">净流入通信设备+13.2亿</strong></td><td style="color:#6b7280">切至科技成长+地产</td></tr>
+      <tr><td>🌐 北向资金</td><td><strong style="color:#111827">实时数据未披露</strong></td><td style="color:#6b7280">A50期指夜盘+0.39%</td></tr>
+    </table>
+  </div>
+
+  <!-- 板块排行 -->
+  <div class="card">
+    <div class="card-title">🔥 板块涨跌排行 <span class="badge">Sector</span></div>
+    <table>
+      <thead><tr><th style="width:45%">🟢 领涨 TOP5</th><th style="width:25%">涨跌幅</th><th>领涨个股</th></tr></thead>
+      <tbody><tr><td>非金属材料Ⅱ</td><td><span class="clr-up">🔴 +4.78%</span></td><td>联瑞新材 +15.01%</td></tr>
+<tr><td>装修装饰Ⅱ</td><td><span class="clr-up">🔴 +4.11%</span></td><td>宝鹰股份 +10.11%</td></tr>
+<tr><td>通信设备</td><td><span class="clr-up">🔴 +3.84%</span></td><td>长进光子 +20.00%</td></tr>
+<tr><td>房地产开发</td><td><span class="clr-up">🔴 +3.47%</span></td><td>荣盛发展 +10.43%</td></tr>
+<tr><td>房地产服务</td><td><span class="clr-up">🔴 +3.31%</span></td><td>特发服务 +6.89%</td></tr>
+</tbody>
+    <p style="font-size:13px;color:#6b7280;margin-top:6px">🔥 概念领涨：昨日连板+6.93% | 光芯片+5.66% | 锗镓概念+4.22% | 房屋租赁+3.96% | 光通信+3.79% | 青蒿素+3.70%</p>
+    <hr class="divider">
+    <table>
+      <thead><tr><th style="width:45%">🔴 领跌 TOP5</th><th style="width:25%">涨跌幅</th><th>说明</th></tr></thead>
+      <tbody><tr><td>石油石化</td><td><span class="clr-down">🟢 -1.55%</span></td><td>高位周期资金流出</td></tr>
+<tr><td>煤炭</td><td><span class="clr-down">🟢 -1.42%</span></td><td>红利板块回调</td></tr>
+<tr><td>家用电器</td><td><span class="clr-down">🟢 -0.67%</span></td><td>白电走弱</td></tr>
+<tr><td>公用事业</td><td><span class="clr-down">🟢 -0.45%</span></td><td>防御板块休整</td></tr>
+<tr><td>银行</td><td><span class="clr-down">🟢 -0.34%</span></td><td>权重压制沪指</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <!-- 资金流向 -->
+  <div class="card">
+    <div class="card-title">💧 资金流向 <span class="badge">Money Flow</span></div>
+    <table>
+      <thead><tr><th style="width:12%">方向</th><th style="width:38%">板块</th><th style="width:20%">净流入/出</th><th>解读</th></tr></thead>
+      <tbody><tr><td>🔴</td><td>通信设备</td><td><strong>+13.15亿</strong></td><td>光通信/CPO资金回流居首</td></tr>
+<tr><td>🔴</td><td>半导体</td><td><strong>+5.97亿</strong></td><td>存储/芯片链获加仓</td></tr>
+<tr><td>🔴</td><td>元件</td><td><strong>+3.18亿</strong></td><td>覆铜板/PCB回暖</td></tr>
+<tr><td>💧</td><td>石油石化/煤炭</td><td><strong>-流出</strong></td><td>高位周期遭资金撤离</td></tr>
+<tr><td>💧</td><td>银行/家电</td><td><strong>-流出</strong></td><td>红利防御切换至成长</td></tr>
+</tbody>
+    </table>
+  </div>
+
+  <!-- 热点个股 -->
+  <div class="card">
+    <div class="card-title">🎯 热点个股 <span class="badge">Stocks</span></div>
+    <div class="stock-list"><div class="stock-item"><span class="sname">百花医药</span><span class="schange clr-up">+10.04%</span></div>
+<div class="stock-item"><span class="sname">通鼎互联</span><span class="schange clr-up">+9.98%</span></div>
+<div class="stock-item"><span class="sname">云赛智联</span><span class="schange clr-up">+9.99%</span></div>
+<div class="stock-item"><span class="sname">美诺华</span><span class="schange clr-up">+10.00%</span></div>
+<div class="stock-item"><span class="sname">永鼎股份</span><span class="schange clr-up">+10.01%</span></div>
+<div class="stock-item"><span class="sname">景旺电子</span><span class="schange clr-up">+10.00%</span></div>
+<div class="stock-item"><span class="sname">宝鼎科技</span><span class="schange clr-up">+10.00%</span></div>
+<div class="stock-item"><span class="sname">城地香江</span><span class="schange clr-up">+9.98%</span></div>
+<div class="stock-item"><span class="sname">金螳螂</span><span class="schange clr-up">+10.08%</span></div>
+<div class="stock-item"><span class="sname">长鑫科技</span><span class="schange clr-up">+6.19%</span></div>
+<div class="stock-item"><span class="sname">太极实业</span><span class="schange clr-up">+7.12%</span></div>
+<div class="stock-item"><span class="sname">云南锗业</span><span class="schange clr-up">+5.68%</span></div>
+<div class="stock-item"><span class="sname">中际旭创</span><span class="schange clr-up">+3.84%</span></div>
+<div class="stock-item"><span class="sname">Nebius</span><span class="schange clr-up">+34.14%</span></div>
+<div class="stock-item"><span class="sname">CoreWeave</span><span class="schange clr-up">+19.28%</span></div>
+<div class="stock-item"><span class="sname">Lumentum</span><span class="schange clr-up">+13.63%</span></div>
+<div class="stock-item"><span class="sname">SK海力士</span><span class="schange clr-up">+9.01%</span></div>
+<div class="stock-item"><span class="sname">美光科技</span><span class="schange clr-up">+4.92%</span></div>
+<div class="stock-item"><span class="sname">英伟达</span><span class="schange clr-up">+3.03%</span></div>
+<div class="stock-item"><span class="sname">腾讯ADR</span><span class="schange clr-down">-5.44%</span></div>
+</div>
+  </div>
+
+  <!-- 财经要闻 -->
+  <div class="card">
+    <div class="card-title">📰 财经要闻 <span class="badge">Headlines</span></div>
+    <div class="summary-banner" style="margin-bottom:12px">
+      <strong>📌 今日要闻速览：</strong>央行Q2货币政策报告定调宽松+连续4日6000亿隔夜逆回购 | 美国7月CPI温和缓解9月加息压力 | 隔夜美股存储/光通信/AI云全线暴涨 | 腾讯Q2资本开支大超预期 | 长江存储NAND份额首进前三 | 中芯国际今日盘后披露Q2业绩 | 7月新能源渗透率首破60% | 美国SPR跌破3亿桶创1983年新低
+    </div>
+    <ul class="event-list">
+      
+<li><span class="ev-tag ev-critical">重磅</span><strong>央行发布2026Q2货币政策执行报告：谋划增量政策、加大逆周期调节</strong><div class="ev-desc">央行明确提出综合运用并适时调整货币政策工具，保持流动性充裕和社会融资条件相对宽松；及时谋划出台务实管用的增量政策，加大逆周期调节力度；拓展丰富央行宏观审慎与金融稳定功能，创新金融工具，维护金融市场平稳运行。货币端明确偏暖，对A股风险偏好形成直接支撑。</div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>央行连续4个交易日开展隔夜逆回购，每日操作量不超过6000亿元</strong><div class="ev-desc">央行公告将在8月14日、8月17日至8月19日开展隔夜逆回购操作，采用固定利率、数量招标，每日操作量不超过6000亿元。8月中旬面临政府债集中缴款等阶段性资金压力，隔夜逆回购投放相当于定向"放水"，有效对冲流动性缺口、缓解资金面紧张。</div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>隔夜美股AI硬件全线爆发：存储、光通信、AI云集体大涨</strong><div class="ev-desc">美东8/12存储芯片股大涨：SK海力士+9.01%、希捷+7.03%、闪迪+5.76%、美光+4.92%、西部数据+3.69%，DRAM ETF+7.68%；光通信Lumentum+13.63%、Credo+8.26%、Coherent+8.24%、康宁+5.18%；AI云CoreWeave+19.28%(Q2营收25.75亿美元+112%)、Nebius+34%、超微电脑+19%。与周一A股算力硬件大跌形成鲜明反转，今日A股存储/光通信/算力链情绪面强共振。</div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>美国7月CPI同比3.4%温和回落，9月加息概率大降</strong><div class="ev-desc">美国7月CPI同比上涨3.4%、低于6月的3.5%，环比+0.1%；核心CPI同比+2.5%符合预期。温和通胀+疲软就业让美联储有理由保持观望，CME"美联储观察"显示9月维持利率不变概率59.9%。但美国10年期国债中标收益率4.683%创2007年以来最高，长端利率压力仍需关注。</div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>腾讯Q2财报：资本开支528-593亿大超预期，利好国产算力</strong><div class="ev-desc">腾讯二季度营收2047.9亿元(+11%)，NON-IFRS净利684亿(+9%)；资本开支大幅跳升至528亿（全年指引上调至593亿），远超市场预估的321亿，同比去年191亿增近3倍，主要投向AI算力（芯片、数据中心），导致本季罕见录得138亿元负自由现金流。对A股腾讯云、国产算力、AI应用（微信AI智能体"小微"灰度测试）形成直接催化。</div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>Counterpoint：长江存储NAND闪存份额首进全球前三</strong><div class="ev-desc">市场研究机构Counterpoint数据显示，2026年二季度NAND闪存市场以出货量计算，三星、SK海力士、长江存储份额分别为25%、22%、14%，长江存储份额首次进入前三。存储涨价周期+国产替代双逻辑共振，利好长鑫科技、太极实业等存储产业链。</div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>中芯国际今日盘后披露Q2业绩，存储/半导体中报密集落地</strong><div class="ev-desc">中芯国际将于8月13日交易时段后披露2026年第二季度业绩、8月14日举行业绩说明会；海光信息、高争民爆、中国移动等股亦将披露2026年中报。今日还有闪迪投资者日（NAND周期与HBF高带宽闪存路线图为存储板块定调），存储链催化密集。</div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>7月新能源车渗透率60.4%首破60%，汽车产业结构质变</strong><div class="ev-desc">中汽协数据，7月汽车产销257.3万/258.4万辆，环比-6.8%/-8%；1-7月同比-3.7%、降幅较上半年收窄。7月新能源车月度销量占比达60.4%首次突破60%大关，前7月累计占比超50%，国内新车消费正式进入新能源主导时代。利好整车及锂电产业链。</div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>7连板百花医药提示风险：不涉及创新药研发</strong><div class="ev-desc">百花医药公告，公司不涉及创新药研发业务，控股股东亦无未来36个月内重大资产重组计划或安排；同时传智教育公告已被深交所重点监控，股价如进一步异常上涨可能申请停牌核查。高位连板股监管信号密集，短线炒作情绪或受抑制。</div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>美国战略石油储备跌破3亿桶，创1983年以来新低</strong><div class="ev-desc">美国能源信息局周度数据显示，截至8月7日当周美国SPR规模降至2.987亿桶，为1983年1月以来最低。叠加霍尔木兹海峡仍关闭（伊朗方面否认重开）、美军海上封锁持续，国际油价维持高位震荡：WTI 83.27美元/桶(+0.08%)、布油88.98美元(+0.08%)。</div></li>
+
+    </ul>
+  </div>
+
+  <!-- 深度复盘 -->
+  <div class="card">
+    <div class="card-title">🔍 深度复盘 <span class="badge">Analysis</span></div>
+    <div class="analysis-box">
+      
+<p><span class="tag tag-policy">政策面</span>货币政策明显转暖是今日最大边际变化：央行Q2执行报告首提"及时谋划出台务实管用的增量政策、加大逆周期调节力度"，流动性定调"充裕+宽松"；并罕见宣布连续4个交易日开展隔夜逆回购（8/14、17-19，每日≤6000亿），针对8月中旬政府债集中缴款进行精准投放，对冲资金面压力。监管层面对高位炒作持续收紧——7连板百花医药、传智教育相继提示风险或遭重点监控，规范市场秩序信号明确，利好行情走"慢牛"而非"疯牛"。</p>
+<p><span class="tag tag-fund">资金面</span>8/12两市成交2.15万亿、缩量1686亿，属存量资金调仓而非增量进场：资金从高位周期/红利（石油石化-1.55%、煤炭-1.42%、银行-0.34%）大幅切换至低位地产+科技成长两大方向，板块口径主力净流入通信设备+13.15亿、半导体+5.97亿、元件+3.18亿。全市场4128只上涨、96涨停、0跌停，赚钱效应大幅回暖，但量能萎缩说明买盘仍谨慎，反弹需放量确认。富时A50期指夜盘+0.39%预示今日高开。</p>
+<p><span class="tag tag-industry">产业面</span>两条主线鲜明：①AI硬件链——昨日CPO/光通信/光芯片/存储集体走强（通信设备+3.84%、非金属材料+4.78%，联瑞新材+15%、长进光子+20%、光智科技+11.71%），长江存储份额进前三、腾讯资本开支超预期、今日闪迪投资者日，存储/光通信/算力链催化密集；②地产链——房地产开发+3.47%、装修装饰+4.11%、房屋租赁+3.96%政策预期升温（北京购房新政、深圳新房成交7月+30%），荣盛发展/市北高新等涨停，但需防脉冲式行情缺乏持续性。半导体设备、覆铜板、TOPCon电池等亦获资金关注。</p>
+<p><span class="tag tag-global">外盘面</span>美国7月CPI温和（3.4%）缓解9月加息压力，美联储9月按兵不动概率59.9%，隔夜美股AI硬件全线爆发：存储（SK海力士+9%、闪迪+5.8%、美光+4.9%）、光通信（Lumentum+13.6%、Coherent+8.2%）、AI云（CoreWeave+19%、Nebius+34%、超微电脑+19%）领涨，标普500+0.26%逼近历史新高、纳指+0.54%。但结构分化明显：Meta-3.38%、微软-2.26%等权重科技下跌，中概金龙指数-2.37%、腾讯ADR-5.44%；Coherent盘后-5%、Cerebras盘后-17%；美债10年收益率4.683%创2007年新高。油价高位（WTI 83.27）受SPR创1983年新低支撑，贵金属走强（现货金4408.67+0.9%）。</p>
+
+    </div>
+  </div>
+
+  <!-- 后市展望 -->
+  <div class="card">
+    <div class="card-title">🔮 后市展望 <span class="badge">Outlook</span></div>
+    <div class="analysis-box">
+      
+<p>周四（8/13）预计<span class="hl">高开、科技成长领涨</span>。三大合力共振：①央行流动性定调转暖+连续4日6000亿隔夜逆回购"放水"；②隔夜美股存储/光通信/AI云全线暴涨，A股AI硬件链强映射；③腾讯资本开支大超预期利好国产算力，中芯国际今日盘后披露Q2业绩有望接力。沪指<span class="hl-green">支撑3925-3930、压力3968-3983</span>，昨日缩量普涨后若今日放量突破压力区，则反弹空间打开，否则仍以结构性行情对待。</p>
+<p><span class="hl-blue">关注方向</span>：① 存储链——长江存储份额进前三+闪迪投资者日+存储涨价周期，长鑫科技/太极实业/兆易创新；② 光通信/CPO——隔夜Lumentum+13.6%、Coherent+8.2%催化，中际旭创/新易盛/天孚通信；③ 半导体设备/材料——应用材料+4%、泛林+4%，北方华创/中微公司；④ 算力/腾讯云链——腾讯资本开支上调，光模块/液冷/IDC；⑤ 地产链——政策预期升温，荣盛发展/市北高新/金螳螂；⑥ 创新药/CXO——低位修复，药明康德/美诺华/百花医药（注意监管）。</p>
+<p><span class="hl">规避方向</span>：高位连板股（百花医药/传智教育遭监管提示、爱丽家居停牌核查余波）、缩量追高标的、已透支业绩的中报高位股。操作上<span class="hl-green">高开不追、回踩低吸</span>，仓位维持5-6成；若早盘冲高3968-3983遇阻且量能未有效放大，可逢高兑现部分科技浮盈，等待回踩3930-3940区间再布局。同时关注今晚美国PPI与初请失业金数据对外围的扰动。</p>
+
+    </div>
+  </div>
+
+  <!-- 多空逻辑 -->
+  <div class="card">
+    <div class="card-title">⚖️ 多空逻辑 <span class="badge">Bull vs Bear</span></div>
+    <div class="debate">
+      <div class="debate-bull"><div class="debate-title">🐂 看多因素</div><ul>
+<p>周四（8/13）预计<span class="hl">高开、科技成长领涨</span>。三大合力共振：①央行流动性定调转暖+连续4日6000亿隔夜逆回购"放水"；②隔夜美股存储/光通信/AI云全线暴涨，A股AI硬件链强映射；③腾讯资本开支大超预期利好国产算力，中芯国际今日盘后披露Q2业绩有望接力。沪指<span class="hl-green">支撑3925-3930、压力3968-3983</span>，昨日缩量普涨后若今日放量突破压力区，则反弹空间打开，否则仍以结构性行情对待。</p>
+<p><span class="hl-blue">关注方向</span>：① 存储链——长江存储份额进前三+闪迪投资者日+存储涨价周期，长鑫科技/太极实业/兆易创新；② 光通信/CPO——隔夜Lumentum+13.6%、Coherent+8.2%催化，中际旭创/新易盛/天孚通信；③ 半导体设备/材料——应用材料+4%、泛林+4%，北方华创/中微公司；④ 算力/腾讯云链——腾讯资本开支上调，光模块/液冷/IDC；⑤ 地产链——政策预期升温，荣盛发展/市北高新/金螳螂；⑥ 创新药/CXO——低位修复，药明康德/美诺华/百花医药（注意监管）。</p>
+<p><span class="hl">规避方向</span>：高位连板股（百花医药/传智教育遭监管提示、爱丽家居停牌核查余波）、缩量追高标的、已透支业绩的中报高位股。操作上<span class="hl-green">高开不追、回踩低吸</span>，仓位维持5-6成；若早盘冲高3968-3983遇阻且量能未有效放大，可逢高兑现部分科技浮盈，等待回踩3930-3940区间再布局。同时关注今晚美国PPI与初请失业金数据对外围的扰动。</p>
+</ul></div>
+      <div class="debate-bear"><div class="debate-title">🐻 看空因素</div><ul>
+<p>周四（8/13）预计<span class="hl">高开、科技成长领涨</span>。三大合力共振：①央行流动性定调转暖+连续4日6000亿隔夜逆回购"放水"；②隔夜美股存储/光通信/AI云全线暴涨，A股AI硬件链强映射；③腾讯资本开支大超预期利好国产算力，中芯国际今日盘后披露Q2业绩有望接力。沪指<span class="hl-green">支撑3925-3930、压力3968-3983</span>，昨日缩量普涨后若今日放量突破压力区，则反弹空间打开，否则仍以结构性行情对待。</p>
+<p><span class="hl-blue">关注方向</span>：① 存储链——长江存储份额进前三+闪迪投资者日+存储涨价周期，长鑫科技/太极实业/兆易创新；② 光通信/CPO——隔夜Lumentum+13.6%、Coherent+8.2%催化，中际旭创/新易盛/天孚通信；③ 半导体设备/材料——应用材料+4%、泛林+4%，北方华创/中微公司；④ 算力/腾讯云链——腾讯资本开支上调，光模块/液冷/IDC；⑤ 地产链——政策预期升温，荣盛发展/市北高新/金螳螂；⑥ 创新药/CXO——低位修复，药明康德/美诺华/百花医药（注意监管）。</p>
+<p><span class="hl">规避方向</span>：高位连板股（百花医药/传智教育遭监管提示、爱丽家居停牌核查余波）、缩量追高标的、已透支业绩的中报高位股。操作上<span class="hl-green">高开不追、回踩低吸</span>，仓位维持5-6成；若早盘冲高3968-3983遇阻且量能未有效放大，可逢高兑现部分科技浮盈，等待回踩3930-3940区间再布局。同时关注今晚美国PPI与初请失业金数据对外围的扰动。</p>
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  子叩 · 每日股市简报 | 数据来源：stock-data-skill + 公开财经资讯<br>
+  以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
