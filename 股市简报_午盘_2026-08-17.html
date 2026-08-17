@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>📊 午盘财经简报</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);color:#fff;padding:32px 20px 26px;text-align:center;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-60%;left:-40%;width:180%;height:200%;background:radial-gradient(ellipse,rgba(255,255,255,.08) 0%,transparent 65%);pointer-events:none}
+.header h1{font-size:26px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:#fff;position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.15)}
+.header .sub{font-size:13px;opacity:.85;color:#e0e7ff;margin-bottom:10px;position:relative;z-index:1}
+.header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1}
+.tag{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;color:#fff}
+.tag-red{background:#ef4444}.tag-green{background:#22c55e}.tag-orange{background:#f59e0b}.tag-blue{background:#60a5fa}
+.container{max-width:860px;margin:0 auto;padding:16px 12px}
+.card{background:#fff;border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8eaed}
+.card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px;color:#111827}
+.card-title .badge{font-size:11px;padding:2px 10px;border-radius:10px;background:#eef2ff;color:#4f46e5;font-weight:500}
+.summary-banner{background:linear-gradient(135deg,#fefce8,#fffbeb);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f59e0b;font-size:14px;line-height:1.9;color:#1f2937}
+.summary-banner strong{color:#d97706}
+.index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.index-item{background:#f8fafc;border-radius:10px;padding:12px 14px;border:1px solid #e5e7eb}
+.index-item .name{font-size:12px;color:#6b7280;margin-bottom:3px;font-weight:500}
+.index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px;color:#111827}
+.index-item .change{font-size:14px;font-weight:600}
+.clr-up{color:#dc2626}.clr-down{color:#16a34a}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;color:#6b7280;border-bottom:2px solid #e5e7eb}
+tbody td{padding:12px;border-bottom:1px solid #f3f4f6;vertical-align:middle;color:#374151}
+tbody tr:last-child td{border-bottom:none}
+.event-list{list-style:none}
+.event-list li{padding:14px 0;border-bottom:1px solid #f3f4f6;font-size:14.5px;line-height:1.9;color:#374151;text-align:justify}
+.event-list li:last-child{border-bottom:none}
+.event-list li strong{color:#111827;font-weight:700}
+.event-list li .ev-desc{margin-top:4px;color:#4b5563}
+.event-list li .src{display:block;margin-top:4px;font-size:12px;color:#6b7280}
+.event-list li .src a{color:#2563eb;text-decoration:none;word-break:break-all}
+.ev-tag{display:inline-block;padding:2px 10px;border-radius:5px;font-size:11px;font-weight:700;margin-right:8px;vertical-align:middle;color:#fff;letter-spacing:.5px}
+.ev-critical{background:#dc2626}.ev-important{background:#f59e0b}.ev-info{background:#3b82f6}.ev-success{background:#16a34a}.ev-purple{background:#7c3aed}
+.analysis-box{font-size:14.5px;line-height:2.0;color:#374151;text-align:justify}
+.analysis-box p{margin-bottom:14px}
+.analysis-box p:last-child{margin-bottom:0}
+.analysis-box strong{color:#111827;font-weight:700}
+.analysis-box .hl{color:#dc2626;font-weight:700}
+.analysis-box .hl-blue{color:#1d4ed8;font-weight:700}
+.analysis-box .hl-green{color:#15803d;font-weight:700}
+.divider{border:none;border-top:1px solid #eee;margin:14px 0}
+.footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#9ca3af;line-height:1.8}
+@media(max-width:640px){
+  body{font-size:14.5px}
+  .header{padding:24px 16px 20px}
+  .header h1{font-size:22px}
+  .container{padding:12px 8px}
+  .card{padding:16px 14px;border-radius:12px;margin-bottom:12px}
+  .card-title{font-size:16px;margin-bottom:12px;padding-bottom:10px}
+  .index-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .analysis-box{font-size:14px;line-height:1.9}
+  .event-list li{font-size:14px;line-height:1.8;padding:12px 0}
+  table{font-size:13px}
+  .summary-banner{font-size:13.5px;line-height:1.8;padding:14px 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 午盘财经简报</h1>
+  <div class="sub">2026年08月17日 周一 · 子叩股市简报（财经信息为主 · 行情简略）</div>
+  <div class="tags">
+    <span class="tag tag-red">🔴涨</span>
+    <span class="tag tag-green">🟢跌</span>
+    <span class="tag tag-orange">📌 数据定调日</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心速览 -->
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>周一"数据定调日"——7月工业/社零/固投及70城房价今晨10点出炉，午后15点国新办发布会详解。三大指数放量走强，科创50大涨3.04%领跑，半导体+4.18%领涨，存储（长鑫科技市值重回4万亿）、CPO、创新药、大消费多点开花，白酒回调。<br>
+      <strong>🎯 核心信号：</strong>半日成交约1.5万亿（放量1097亿）、超3800股上涨、主力净流入84.67亿——情绪修复明显；央行8/17-19连续三日隔夜逆回购"补水"护航，人民币中间价创三年半新高，外资回流预期升温。<br>
+      <strong>⚠️ 关键风险：</strong>今日解禁316.57亿（广钢气体244.99亿居首）、白酒/高位题材调整、7月信贷单月负增指向内需偏弱、美股周五收跌AI估值担忧。
+    </div>
+    <div class="index-grid">
+      <div class="index-item"><div class="name">上证指数</div><div class="price">3,960.19</div><div class="change clr-up">🔴+0.84%</div></div>
+      <div class="index-item"><div class="name">深证成指</div><div class="price">14,534.46</div><div class="change clr-up">🔴+1.26%</div></div>
+      <div class="index-item"><div class="name">创业板指</div><div class="price">3,674.68</div><div class="change clr-up">🔴+1.33%</div></div>
+      <div class="index-item"><div class="name">科创50</div><div class="price">1,769.93</div><div class="change clr-up">🔴+3.04%</div></div>
+      <div class="index-item"><div class="name">沪深300</div><div class="price">4,701.19</div><div class="change clr-up">🔴+0.76%</div></div>
+      <div class="index-item"><div class="name">上证50</div><div class="price">2,932.11</div><div class="change clr-up">🔴+0.55%</div></div>
+      <div class="index-item"><div class="name">中证1000</div><div class="price">7,887.92</div><div class="change clr-up">🔴+1.52%</div></div>
+      <div class="index-item"><div class="name">北证50</div><div class="price">1,102.85</div><div class="change clr-up">🔴+1.41%</div></div>
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 半日成交额</td><td><strong style="color:#111827">约1.5万亿</strong></td><td style="color:#6b7280">沪7105亿+深7866亿，放量1097亿</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong style="color:#111827">超3800涨</strong></td><td style="color:#6b7280">普涨格局，情绪修复</td></tr>
+      <tr><td>🎯 涨停/连板</td><td><strong style="color:#111827">72家 / 14家</strong></td><td style="color:#6b7280">题材集中存储/CPO/消费</td></tr>
+      <tr><td>💰 主力资金</td><td><strong style="color:#dc2626">净流入 +84.67亿</strong></td><td style="color:#6b7280">超大单+135.05亿/大单-50.38亿</td></tr>
+      <tr><td>📊 两融余额(8/14)</td><td><strong style="color:#111827">26,395.28亿</strong></td><td style="color:#6b7280">环比-18.41亿，杠杆偏谨慎</td></tr>
+    </table>
+  </div>
+
+  <!-- 模块一 财务报告 -->
+  <div class="card">
+    <div class="card-title">📊 模块一 · 财务报告 <span class="badge">Earnings</span></div>
+    <ul class="event-list">
+      <li><span class="ev-tag ev-critical">重磅</span><strong>中芯国际/华虹宏力Q2财报：晶圆代工量价齐升，AI需求"远远超过预期"</strong>
+        <div class="ev-desc">华虹Q2独立式非易失性存储器(闪存)收入同比暴增149.3%，产能利用率高达102.8%超负荷运转；中芯赵海军称AI/算力相关逻辑电路、电源管理"供不应求"，部分产品订单达产能1.5-2倍。全球晶圆代工进入量价齐升上行周期，AI需求从先进制程/存储溢出至成熟制程与特色工艺。</div>
+        <span class="src">[来源] <a href="http://m.toutiao.com/group/7674770251812258342/">贝果财经：AI推动需求激增 国内两大晶圆代工厂Q2量价齐升</a></span></li>
+      <li><span class="ev-tag ev-important">中报</span><strong>中微半导：上半年净利同比+98.48%，MCU供不应求迎涨价潮</strong>
+        <div class="ev-desc">MCU行业供需紧张带来涨价周期，半导体景气向细分芯片传导；盘中中微半导涨超14%。盛科通信签订以太网交换芯片重大长单，合同金额超去年营收50%，收入按履约进度分期确认。</div>
+        <span class="src">[来源] <a href="http://applocal.myzaker.com/news/article.php?pk=6a8283fa8e9f0916861dbca8">每日经济新闻：周末A股一批重磅公告披露</a></span></li>
+      <li><span class="ev-tag ev-important">高景气</span><strong>永和股份：净利同比+89.01%，制冷剂高景气并同步分红(10派2.5元)</strong>
+        <div class="ev-desc">制冷剂行业景气延续；三瑞智能(10派3.75元)、华测检测(净利+20.63%)、中润光学(净利+182.33%)等中报业绩增长并推出分红方案，中报"分红潮"延续强化股东回报。</div>
+        <span class="ev-src"></span>
+        <span class="src">[来源] <a href="http://applocal.myzaker.com/news/article.php?pk=6a8283fa8e9f0916861dbca8">每日经济新闻 ｜ <a href="http://m.toutiao.com/group/7674779527079363124/">证券时报·早新闻</a></span></li>
+      <li><span class="ev-tag ev-success">验证</span><strong>药明康德A/H股双双涨超4%齐创历史新高，CXO中报回暖持续验证</strong>
+        <div class="ev-desc">创新药板块走强，誉衡药业7天5板、华森制药2连板；8月CRO指数已大涨超33%，药明康德中报净利110.8亿(+29.43%)订单饱满，CXO景气修复获资金持续加仓。</div>
+        <span class="src">[来源] <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社/凤凰网：A股午盘报道</a></span></li>
+      <li><span class="ev-tag ev-purple">风险</span><strong>中报分化：锦龙股份净利-88.59%，颀中科技由盈转亏净亏3.03亿</strong>
+        <div class="ev-desc">锦龙股份上半年净利大降88.59%；近岸蛋白半年报预亏且亏损扩大；颀中科技由盈转亏。中报"业绩验证窗口"开启，业绩暴雷个股与板块需警惕"利好兑现回落"。</div>
+        <span class="src">[来源] <a href="http://applocal.myzaker.com/news/article.php?pk=6a8283fa8e9f0916861dbca8">每日经济新闻</a></span></li>
+      <li><span class="ev-tag ev-info">前瞻</span><strong>财报超级周来袭：兆易创新/天孚通信/长飞光纤/科大讯飞/恒瑞医药等本周放榜</strong>
+        <div class="ev-desc">本周A股进入中报披露高峰，存储、光模块、AI应用等主线龙头业绩集中验证，将决定本轮科技行情的持续性；港股阿里、百度、快手、小米亦集中放榜。</div>
+        <span class="src">[来源] <a href="https://cj.sina.cn/article/norm_detail?url=https%3A%2F%2Ffinance.sina.com.cn%2Fjjxw%2F2026-08-16%2Fdoc-ininpfmm7666268.shtml">中国证券报：事关A股多个大事就在下周</a></span></li>
+    </ul>
+  </div>
+
+  <!-- 模块二 宏观数据 -->
+  <div class="card">
+    <div class="card-title">🏛 模块二 · 宏观数据 <span class="badge">Macro</span></div>
+    <ul class="event-list">
+      <li><span class="ev-tag ev-critical">重磅</span><strong>央行7月金融数据：M2+7.7%、社融存量+7.4%，新增社融时隔4个月单月同比多增</strong>
+        <div class="ev-desc">7月末M2余额355.51万亿(+7.7%)，社融存量463.27万亿(+7.4%)，两者增速显著高于上半年名义GDP，社会融资条件处于宽松状态；但7月人民币贷款-3400亿（年内第二次负增），"降速提质"成新常态。前7月社融增量22.25万亿、贷款10.38万亿。</div>
+        <span class="src">[来源] <a href="http://www.xinhuanet.com/fortune/20260817/46fc0ecbf6364824b85c46fe7758e5cc/c.html">新华网/经济参考报 ｜ <a href="http://finance.people.com.cn/n1/2026/0817/c1004-40780482.html">人民日报</a></span></li>
+      <li><span class="ev-tag ev-critical">数据定调</span><strong>今日10:00统计局发布7月工业/社零/固投及70城房价——"数据定调日"</strong>
+        <div class="ev-desc">机构预期7月工业增加值放缓至4.8%左右(前值5.3%)、社零小幅回升至1.5%左右(前值1.0%)、固投降幅扩大至6%-6.5%；7月制造业PMI已回落至49.2%荣枯线下。数据强弱直接影响8/20 LPR报价预期与顺周期板块情绪，午后15:00国新办发布会将详解。</div>
+        <span class="src">[来源] <a href="http://m.toutiao.com/group/7674794056014234131/">金融界·8/17交易日历 ｜ <a href="http://m.toutiao.com/group/7674603212686623270/">机构预期综述</a></span></li>
+      <li><span class="ev-tag ev-important">央行操作</span><strong>央行8/17-19连续三日隔夜逆回购"补水"：今日7天逆回购零操作+5655亿隔夜逆回购，3670亿到期</strong>
+        <div class="ev-desc">隔夜逆回购操作频率明显提升（6月/7月/8月三次），已常态化并承担主要短端政策利率职能；DR001取代DR007成为核心调控目标，货币市场利率中枢下移预期强化，为8月中旬政府债缴款高峰护航。</div>
+        <span class="src">[来源] <a href="http://m.toutiao.com/group/7674806964110557705/">澎湃新闻 ｜ <a href="http://m.toutiao.com/group/7674782783427969574/">华西证券：新一轮利率改革</a></span></li>
+      <li><span class="ev-tag ev-important">汇率</span><strong>人民币中间价6.7873，调升5基点创2023年2月以来新高</strong>
+        <div class="ev-desc">人民币走强+外资近一月大举流入中国股票基金(占新兴市场近六成)，"增配中国"共识升温，利好核心资产与外资偏好标的；隔夜外围美股小幅收跌但降息预期升温(9月按兵不动概率升至约70%)。</div>
+        <span class="src">[来源] <a href="https://wdatahk.aastocks.com/en/stocks/news/aafn-con/NOW.1538629/latest-news/AAFN">AASTOCKS ｜ <a href="http://m.toutiao.com/group/7674801919570870827/">盘前三件事</a></span></li>
+      <li><span class="ev-tag ev-info">物价</span><strong>7月物价温和：CPI同比+0.5%、核心CPI+0.9%，PPI同比+3.5%</strong>
+        <div class="ev-desc">暑期出行带动宾馆住宿、机票等价格上行，核心CPI延续正增长反映服务消费回暖；PPI高位回落但上游仍具韧性。物价偏弱为政策宽松打开空间，市场降准降息预期升温（降准可能性大于降息）。</div>
+        <span class="src">[来源] <a href="https://www.stats.gov.cn/sj/zxfb/202608/t20260809_1965008.html">国家统计局 ｜ <a href="https://caifuhao.eastmoney.com/news/20260817083321839817680">兴银基金周瞻</a></span></li>
+      <li><span class="ev-tag ev-info">前瞻</span><strong>8/20(周四)最新LPR将公布：1年期3.0%/5年期以上3.5%已连续14个月不变</strong>
+        <div class="ev-desc">央行二季度货政报告定调"适度宽松+谋划增量政策"，分析人士预计下半年或降息10bp+降准0.5pct，三季末前后增量政策有望落地；LPR是否调整是本周流动性核心观察点。</div>
+        <span class="src">[来源] <a href="https://cj.sina.cn/article/norm_detail?url=https%3A%2F%2Ffinance.sina.com.cn%2Fjjxw%2F2026-08-16%2Fdoc-ininpfmm7666268.shtml">中国证券报</a></span></li>
+    </ul>
+  </div>
+
+  <!-- 模块三 行业数据 -->
+  <div class="card">
+    <div class="card-title">🏭 模块三 · 行业数据 <span class="badge">Industry</span></div>
+    <ul class="event-list">
+      <li><span class="ev-tag ev-critical">存储</span><strong>长鑫科技大涨9.01%市值重回4万亿（≈2.5个茅台），SK海力士斥384亿美元新建晶圆厂</strong>
+        <div class="ev-desc">SK海力士宣布投资384亿美元在韩国新建晶圆厂应对AI存储需求；SK董事长称存储涨价已"失控"（40%-50%），明年为最艰难一年；2026全球存储产值预计8893亿美元(+296%)，2027年或达1.28万亿美元。A股存储器板块+3.46%，闪迪美股一周涨35%映射。</div>
+        <span class="src">[来源] <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社/凤凰网 ｜ <a href="http://m.toutiao.com/group/7674253720539922959/">财信证券：AI改写存储赛道</a></span></li>
+      <li><span class="ev-tag ev-important">算力</span><strong>算力荒愈演愈烈：H100一年期合约价半年涨约40%，GPU按需产能全部售罄</strong>
+        <div class="ev-desc">SemiAnalysis数据显示现货资源几乎耗尽；全球九大云厂商2026资本开支预计8300亿美元(+79%)，服务器DRAM需求+45%/NAND+60%，服务器首次超过手机成为存储最大下游。英伟达CPO交换机全面量产，硅光时代来临。</div>
+        <span class="src">[来源] <a href="https://shangrao.njjwfs.com/html/62f699931.html">SemiAnalysis算力报告 ｜ <a href="http://m.toutiao.com/group/7674776381200384527/">英伟达CPO量产</a></span></li>
+      <li><span class="ev-tag ev-important">半导体设备</span><strong>SK海力士扩产带动设备情绪：中科飞测涨超10%、长川科技+6.94%，四部门税收递延新政加持</strong>
+        <div class="ev-desc">集成电路/工业母机企业非货币性资产交换所得可5年递延纳税(2026-2028)，直接利好半导体设备、材料产业链现金流；叠加晶圆厂扩产周期与国产替代，设备板块景气度共振向上。</div>
+        <span class="src">[来源] <a href="http://m.toutiao.com/group/7674836365225312809/">北辰紫曜午间复盘 ｜ <a href="http://m.toutiao.com/group/7674779527079363124/">证券时报·早新闻</a></span></li>
+      <li><span class="ev-tag ev-important">光模块</span><strong>CPO概念持续活跃：中石科技20cm二连板、共进股份3连板、天孚通信+6.06%</strong>
+        <div class="ev-desc">英伟达CPO交换机全面量产催化硅光/CPO产业链；长飞光纤以1.59亿元中标中国电信广东空芯光缆采购项目（国内最大单体空芯光缆订单），杭电股份直线涨停，光纤光缆迎来重大利好。</div>
+        <span class="src">[来源] <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社 ｜ <a href="http://m.toutiao.com/group/7674836365225312809/">光纤光缆中标</a></span></li>
+      <li><span class="ev-tag ev-success">消费</span><strong>大消费盘中走强：一鸣食品6天5板，促消费政策预期升温</strong>
+        <div class="ev-desc">国新办8/18(明日)15时发布会市场预期有望出台新一轮促消费政策，叠加7月社零数据今日出炉、暑期服务消费亮眼；供销大集、阳光乳业涨停，桂发祥、黑芝麻等跟涨。商品零售修复偏慢但政策催化在途。</div>
+        <span class="src">[来源] <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社/凤凰网 ｜ <a href="http://m.toutiao.com/group/7674836365225312809/">北辰紫曜复盘</a></span></li>
+      <li><span class="ev-tag ev-info">医药</span><strong>创新药+医疗服务活跃：药明康德创历史新高，医疗板块景气验证</strong>
+        <div class="ev-desc">创新药概念日内震荡回升，誉衡药业7天5板、华森制药2连板；8月CRO指数大涨超33%，医药生物板块整体+0.43%、医疗服务+2.12%，中报业绩与出海逻辑共振，机构关注创新药年会(8/20)催化。</div>
+        <span class="src">[来源] <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社 ｜ 行情数据(stock CLI)</a></span></li>
+    </ul>
+  </div>
+
+  <!-- 模块四 另类数据 -->
+  <div class="card">
+    <div class="card-title">🔍 模块四 · 另类数据 <span class="badge">Alternative Data</span></div>
+    <ul class="event-list">
+      <li><span class="ev-tag ev-important">资金</span><strong>主力资金半日净流入+84.67亿（超大单+135.05亿/大单-50.38亿），情绪明显回暖</strong>
+        <div class="ev-desc">半导体/通信设备/电子化学品资金聚焦，与指数普涨共振；半日成交约1.5万亿较上交易日放量1097亿，放量普涨形态健康，午后量能能否延续是持续性关键。</div>
+        <span class="src">[来源] 腾讯行情(asfund) ｜ <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社午盘成交数据</a></span></li>
+      <li><span class="ev-tag ev-important">两融</span><strong>两融余额26,395.28亿环比-18.41亿，杠杆资金高位谨慎</strong>
+        <div class="ev-desc">8/4-13两融曾连续8日连增累计+730亿，8/14转为小幅回落；科创板融资余额+4.94亿、277股环比增加(寒武纪/澜起/长鑫居前)，杠杆资金"弃高位、守科创"分化明显。ETF两融余额1120.44亿周环比-21.35亿。</div>
+        <span class="src">[来源] <a href="http://m.toutiao.com/group/7674796558264681014/">财联社 ｜ <a href="http://m.toutiao.com/group/7674800743735411250/">证券时报科创板两融</a></span></li>
+      <li><span class="ev-tag ev-important">外资</span><strong>二季度北向大举加仓硬科技：宁德时代+554亿、中微公司+389亿、半导体设备龙头翻倍</strong>
+        <div class="ev-desc">外资加仓重心集中在半导体设备/硅片、AI算力硬件、储能，传统白酒持续减仓(茅台北向Q2减持214.88亿)；近一月中国股票基金净流入占新兴市场近六成，人民币创三年半新高强化外资回流逻辑。</div>
+        <span class="src">[来源] <a href="http://m.toutiao.com/group/7674256655386853911/">2026半年报外资加仓盘点 ｜ <a href="https://stcn.com/quotes/index/sh600519">茅台北向数据</a></span></li>
+      <li><span class="ev-tag ev-critical">解禁</span><strong>今日解禁316.57亿：广钢气体244.99亿居首，但大股东承诺24个月不减持</strong>
+        <div class="ev-desc">10家公司限售股解禁，广钢气体6.28亿股(占47.61%)、亚通精工(63.34%)、固高科技(24.94%)居前；广钢气体控股股东承诺24个月不减持（实际流通仅6.68%），解禁冲击或低于预期，广钢气体今日涨超4%。</div>
+        <span class="src">[来源] <a href="https://www.cls.cn/detail/2455487">财联社解禁一览 ｜ <a href="https://m.thepaper.cn/newsDetail_forward_33785847">澎湃·广钢气体承诺不减持</a></span></li>
+      <li><span class="ev-tag ev-success">回购</span><strong>8/17晚间回购潮再起：派能科技/中控技术/大全能源/纳芯微等董事长密集提议回购</strong>
+        <div class="ev-desc">派能科技8000万-1.2亿、中控技术5000万-1亿、大全能源2亿-4亿、纳芯微2亿-4亿、复洁环保、新锐股份、诺唯赞等多家科创板公司同日披露回购提议，产业资本"真金白银"释放信心。</div>
+        <span class="src">[来源] <a href="http://www.egsea.com/quotation/stock-info/sh600769.html">e公司·回购公告汇总</a></span></li>
+      <li><span class="ev-tag ev-info">情绪</span><strong>涨停72家/连板14家/超3800只个股上涨，市场情绪明显修复</strong>
+        <div class="ev-desc">热点快速轮动但赚钱效应扩散：存储(长鑫/通富微电+9%)、CPO(中石科技/共进股份)、消费(一鸣食品)、农业(罗牛山/种植业+4.2%)多线开花；白酒(茅台-4.23%)、游戏、影视院线调整，结构分化延续。</div>
+        <span class="src">[来源] <a href="https://news.ifeng.com/c/8vf0DwbbGy2">财联社 ｜ 行情数据(stock CLI)</a></span></li>
+    </ul>
+  </div>
+
+  <!-- 午后展望 -->
+  <div class="card">
+    <div class="card-title">💡 午后展望 <span class="badge">Outlook</span></div>
+    <div class="analysis-box">
+      <p><strong>综合判断：</strong>今日为"数据+资金"双验证日——①数据端：7月工业/社零/固投及70城房价今晨10点出炉，午后15点国新办发布会是二次定价窗口，机构普遍预期"总量边际回落、高技术制造与暑期服务消费结构支撑"，弱而不崩的读数反而强化政策加码预期；②资金端：主力半日净流入84.67亿+央行连续三日隔夜逆回购"补水"+人民币创三年半新高，流动性与情绪双重护航；③产业端：存储超级周期(SK海力士384亿扩产+长鑫市值破4万亿)、CPO/半导体设备、大消费政策预期三大主线清晰。</p>
+      <p><strong>风险提示：</strong>①今日解禁316.57亿虽广钢气体大股东承诺不减持，但亚通精工(63.34%)等解禁比例高个股仍存抛压；②白酒(茅台-4.23%)/游戏/影视等高估值题材调整，高位股获利兑现压力仍在；③7月信贷单月负增反映内需偏弱，数据若大幅低于预期或压制顺周期；④美股周五收跌、AI估值担忧未消。</p>
+      <p><strong>午后节奏：</strong>沪指已站上3960，上方3970-3980为前期密集压力区。若午后量能延续至全天2.4万亿上方+国新办发布会释放政策暖风，有望冲击4000关口；若数据不及预期则回踩3930-3940支撑。主线仍聚焦半导体/存储/CPO/算力硬件中报业绩兑现品种，消费板块关注明日促消费政策发布会催化，规避纯题材高位股与解禁+业绩暴雷个股。</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  子叩 · 2026-08-17 周一午盘财经简报 | 数据截至 8/17 12:05（指数/资金为实时）<br>
+  数据来源：央行/国家统计局/财政部官网 + 财联社/每经/证券时报/澎湃 + stock-data-skill 行情 | 以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
