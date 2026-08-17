@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>📊 股市简报</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;padding:0;font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  
+  /* Header */
+  .header{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);color:#fff;padding:32px 20px 26px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;top:-60%;left:-40%;width:180%;height:200%;background:radial-gradient(ellipse,rgba(255,255,255,.08) 0%,transparent 65%);pointer-events:none}
+  .header h1{font-size:26px;font-weight:800;letter-spacing:1px;margin-bottom:6px;color:#fff;position:relative;z-index:1;text-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .header .sub{font-size:13px;opacity:.85;color:#e0e7ff;margin-bottom:10px;position:relative;z-index:1}
+  .header .tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1}
+  .tag{display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;color:#fff}
+  .tag-red{background:#ef4444}.tag-green{background:#22c55e}.tag-orange{background:#f59e0b}.tag-blue{background:#60a5fa}.tag-gray{background:rgba(255,255,255,.2)}
+  
+  .container{max-width:860px;margin:0 auto;padding:16px 12px}
+  
+  /* Cards */
+  .card{background:#fff;border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #e8eaed}
+  .card-title{font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f2f5;display:flex;align-items:center;gap:8px;color:#111827}
+  .card-title .badge{font-size:11px;padding:2px 10px;border-radius:10px;background:#eef2ff;color:#4f46e5;font-weight:500}
+  
+  /* 核心速览 */
+  .summary-banner{background:linear-gradient(135deg,#fefce8,#fffbeb);border-radius:12px;padding:16px 20px;margin-bottom:16px;border-left:4px solid #f59e0b;font-size:14px;line-height:1.9;color:#1f2937}
+  .summary-banner strong{color:#d97706}
+  
+  .index-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .index-item{background:#f8fafc;border-radius:10px;padding:12px 14px;border:1px solid #e5e7eb;transition:background .2s}
+  .index-item:hover{background:#f1f5f9}
+  .index-item .name{font-size:12px;color:#6b7280;margin-bottom:3px;font-weight:500}
+  .index-item .price{font-size:22px;font-weight:700;letter-spacing:-.5px;color:#111827}
+  .index-item .change{font-size:14px;font-weight:600}
+  .clr-up{color:#dc2626}.clr-down{color:#16a34a}
+  
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e5e7eb}
+  tbody td{padding:12px;border-bottom:1px solid #f3f4f6;vertical-align:middle;color:#374151}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+  
+  /* 涨跌幅进度条 */
+  .bar-wrapper{display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:3px;min-width:4px;transition:width .3s}
+  .bar-up{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  .bar-down{background:linear-gradient(90deg,#22c55e,#16a34a)}
+  .bar-label{font-weight:600;white-space:nowrap;min-width:50px;text-align:right;color:#374151}
+  
+  /* 要闻列表 - 优化大段文字 */
+  .event-list{list-style:none}
+  .event-list li{padding:14px 0;border-bottom:1px solid #f3f4f6;font-size:14.5px;line-height:1.9;color:#374151;text-align:justify}
+  .event-list li:last-child{border-bottom:none}
+  .event-list li strong{color:#111827;font-weight:700}
+  .event-list li .ev-desc{margin-top:4px;color:#4b5563}
+  .ev-tag{display:inline-block;padding:2px 10px;border-radius:5px;font-size:11px;font-weight:700;margin-right:8px;vertical-align:middle;color:#fff;letter-spacing:.5px}
+  .ev-critical{background:#dc2626}.ev-important{background:#f59e0b}.ev-info{background:#3b82f6}.ev-success{background:#16a34a}.ev-purple{background:#7c3aed}
+  
+  /* 热点个股 */
+  .stock-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+  .stock-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;font-size:13px}
+  .stock-item .sname{font-weight:600;color:#111827}
+  .stock-item .schange{font-weight:600;font-size:13px}
+  
+  /* 多空逻辑 */
+  .debate{display:flex;flex-direction:column;gap:12px;font-size:13px}
+  .debate-bull{background:#f0fdf4;border-radius:10px;padding:14px 16px;border-left:3px solid #22c55e}
+  .debate-bear{background:#fef2f2;border-radius:10px;padding:14px 16px;border-left:3px solid #ef4444}
+  .debate-title{font-weight:700;margin-bottom:6px;color:#16a34a}
+  .debate-bear .debate-title{color:#dc2626}
+  .debate ul{padding-left:16px;line-height:1.9;color:#374151}
+  
+  /* 大段文字排版 - 深度复盘/后市展望 */
+  .analysis-box{font-size:14.5px;line-height:2.0;color:#374151;text-align:justify}
+  .analysis-box p{margin-bottom:14px}
+  .analysis-box p:last-child{margin-bottom:0}
+  .analysis-box .tag{display:inline-block;padding:3px 12px;border-radius:6px;font-size:11.5px;font-weight:700;margin-right:8px;vertical-align:middle;letter-spacing:.5px}
+  .tag-policy{background:#ede9fe;color:#6d28d9}
+  .tag-fund{background:#dbeafe;color:#1d4ed8}
+  .tag-industry{background:#fef3c7;color:#b45309}
+  .tag-global{background:#dcfce7;color:#15803d}
+  .analysis-box strong{color:#111827;font-weight:700}
+  .analysis-box .hl{color:#dc2626;font-weight:700}
+  .analysis-box .hl-blue{color:#1d4ed8;font-weight:700}
+  .analysis-box .hl-green{color:#15803d;font-weight:700}
+  
+  /* 分隔线 */
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  
+  /* Footer */
+  .footer{text-align:center;padding:24px 16px 32px;font-size:12px;color:#9ca3af;line-height:1.8}
+  
+  /* ===== 手机端适配 ===== */
+  @media(max-width:640px){
+    body{font-size:14.5px}
+    .header{padding:24px 16px 20px}
+    .header h1{font-size:22px}
+    .container{padding:12px 8px}
+    .card{padding:16px 14px;border-radius:12px;margin-bottom:12px}
+    .card-title{font-size:16px;margin-bottom:12px;padding-bottom:10px}
+    .index-grid{grid-template-columns:1fr 1fr;gap:8px}
+    .stock-list{grid-template-columns:1fr}
+    .analysis-box{font-size:14px;line-height:1.9}
+    .analysis-box p{margin-bottom:12px}
+    .event-list li{font-size:14px;line-height:1.8;padding:12px 0}
+    table{font-size:13px}
+    thead th{padding:8px 8px;font-size:11px}
+    tbody td{padding:10px 8px}
+    .summary-banner{font-size:13.5px;line-height:1.8;padding:14px 16px}
+    .debate{font-size:12.5px}
+    .debate ul{line-height:1.8;padding-left:14px}
+    .bar-label{min-width:44px;font-size:12px}
+    .debate-bull,.debate-bear{padding:12px 14px}
+  }
+  @media(max-width:380px){
+    body{font-size:14px}
+    .index-grid{grid-template-columns:1fr 1fr}
+    .card{padding:14px 12px}
+  }
+</style>
+</head>
+<body>
+
+<div style="background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#3b82f6 100%);padding:36px 20px 30px;text-align:center;">
+  <h1 style="font-size:26px;font-weight:800;color:#ffffff;margin:0 0 8px 0;letter-spacing:1px;">📊 盘前财经简报</h1>
+  <div style="font-size:13px;color:#e0e7ff;margin-bottom:12px;">2026年08月17日 周一 · 子叩财经日报</div>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#ef4444;color:#ffffff;">🔴涨</span>
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#22c55e;color:#ffffff;">🟢跌</span>
+    <span style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:#f59e0b;color:#ffffff;">⚠️ 市场提示</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 核心速览 -->
+  <div class="card">
+    <div class="card-title">⚡ 核心速览 <span class="badge">Key Points</span></div>
+    <div class="summary-banner">
+      <strong>📌 今日定性：</strong>周末A股休市，行情基线为8/14收盘——沪指3927.18（+0.01%）、创业板指领涨1.12%至3626.30，两市成交2.14万亿缩量约4081亿，2400涨/2970跌，涨停64/跌停10。<br><strong>🎯 核心判断：</strong>今日市场两大变量：①上午10:00统计局发布7月工业增加值/社零/固投，机构预期工业+4.8%、社零+1.6%、固投-5.9%，内需弱复苏成色待验证；②央行8/17-19开展隔夜逆回购（每日≤6000亿）+8/14已落地1万亿6个月买断式逆回购等额续作，流动性宽松信号明确。外盘：美股8/14小幅收跌但标普/纳指录得周线三连阳，存储链（闪迪周涨35%）与光通信大涨；港股7月以来恒指累涨11%领跑全球。<br>⚠️ <strong>关键风险：</strong>美股7月零售销售意外-0.6%、密歇根消费者信心8月初值51.0大幅下滑，消费走弱或压制全球风险偏好；美国对伊强硬+霍尔木兹海峡封锁风险推升油价（布伦特+1.67%报88.52）；中报密集披露期业绩雷频现（贵州茅台净利-1.95%、朗新科技转亏）；全球基金8/6-12净流出A股67.92亿美元。
+    </div>
+    <div class="index-grid">
+      <div class="index-item"><div class="name">上证指数</div><div class="price">3,927.18</div><div class="change clr-up">🔴 +0.01%</div></div>
+<div class="index-item"><div class="name">深证成指</div><div class="price">14,354.31</div><div class="change clr-up">🔴 +0.45%</div></div>
+<div class="index-item"><div class="name">创业板指</div><div class="price">3,626.30</div><div class="change clr-up">🔴 +1.12%</div></div>
+<div class="index-item"><div class="name">科创50</div><div class="price">1,717.68</div><div class="change clr-up">🔴 0.00%</div></div>
+<div class="index-item"><div class="name">沪深300</div><div class="price">4,665.88</div><div class="change clr-up">🔴 +0.04%</div></div>
+<div class="index-item"><div class="name">上证50</div><div class="price">2,916.13</div><div class="change clr-down">🟢 -0.41%</div></div>
+<div class="index-item"><div class="name">中证1000</div><div class="price">7,769.82</div><div class="change clr-up">🔴 +0.70%</div></div>
+<div class="index-item"><div class="name">北证50</div><div class="price">1,087.52</div><div class="change clr-down">🟢 -0.94%</div></div>
+
+    </div>
+    <hr class="divider">
+    <table>
+      <tr><td style="width:38%">📊 成交额</td><td><strong style="color:#111827">2.14万亿</strong></td><td style="color:#6b7280">较前日 缩量4081亿</td></tr>
+      <tr><td>📈 涨跌家数</td><td><strong style="color:#111827">2400涨 / 2970跌</strong></td><td style="color:#6b7280">涨跌比 1:1.24</td></tr>
+      <tr><td>🎯 涨停/跌停</td><td><strong style="color:#111827">64家 / 10家</strong></td><td style="color:#6b7280">市场情绪: 降温(连板19只)</td></tr>
+      <tr><td>💰 主力资金</td><td><strong style="color:#111827">净流出 57.38亿</strong></td><td style="color:#6b7280">资金态度: 科技集中(通信+141亿)</td></tr>
+      <tr><td>🌐 北向资金</td><td><strong style="color:#111827">净卖出 32亿(8/13)</strong></td><td style="color:#6b7280">外资态度: 谨慎</td></tr>
+    </table>
+  </div>
+
+<div class="card"><div class="card-title">📊 模块一 · 财务报告 <span class="badge">Earnings</span></div><div class="summary-banner" style="margin-bottom:12px"><strong>📌 核心看点：</strong>中报密集披露期正式开启（本周超1100只），AI算力/存储/黄金链业绩普遍高增，消费龙头（茅台）承压；回购增持潮持续，券商估值修复启动。</div><ul class="event-list"><li><span class="ev-tag ev-critical">重磅</span><strong>贵州茅台半年报：总营收922.78亿(+1.3%)、净利445亿(-1.95%)，白酒龙头罕见负增长</strong><div class="ev-desc">8/14晚披露半年报，营收微增但净利同比转降，为近年罕见。增速放缓主因白酒动销承压、渠道库存高企及行业调整。作为白酒板块风向标，其业绩走弱或压制消费蓝筹情绪，同时进一步凸显"高股息+确定性"资产相对价值。<br>🔗 <a href="https://www.stcn.com/quotes/index/sh600519.html">来源：证券时报行情</a></div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>本周超1100只股票集中披露半年报：中国平安、中际旭创、紫金矿业、兆易创新、天孚通信、恒瑞医药等压轴登场</strong><div class="ev-desc">8/17-8/21进入中报业绩披露高峰期，AI算力链（中际旭创/天孚通信）、存储（兆易创新）、有色（紫金矿业）等主赛道业绩兑现成为市场焦点。机构指出，行情将从情绪驱动转向业绩验证，真正具备兑现能力的细分方向将脱颖而出。<br>🔗 <a href="http://m.toutiao.com/group/7674777224024703526/">来源：中国证券报</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>存储链中报高增：中微半导净利+98.48%、兆易创新拟10-20亿回购注销</strong><div class="ev-desc">中微半导上半年净利1.72亿(+98.48%)，受益AI带动半导体需求。兆易创新公告拟以不超20亿元回购股份并全部注销，彰显存储涨价周期下业绩与股东回报双改善，对存储板块构成直接利好。<br>🔗 <a href="http://m.toutiao.com/group/7674777224024703526/">来源：中国证券报</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>紫金黄金国际：上半年净利14.5亿美元(+179%)，首次派发中期股息每股1.50港元</strong><div class="ev-desc">受益金价上涨，黄金销售收入约39亿美元(+100%)。叠加金价8月以来上涨8.36%、国内金价站上900元/克，黄金产业链业绩兑现确定性强，有色/贵金属板块中期逻辑强化。<br>🔗 <a href="http://m.toutiao.com/group/7674777224024703526/">来源：中国证券报</a></div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>券商增持回购密集落地：东吴证券股东拟增持1-2亿、长江证券回购1-2亿、兴业证券股东拟增持3000-6000万</strong><div class="ev-desc">产业资本集体入场修正券商估值错位，叠加财富管理转型（买方投顾规模扩容）与中报业绩兑现窗口，机构认为券商板块处于"增持回购+转型+政策"多重共振，估值修复可期。<br>🔗 <a href="http://m.toutiao.com/group/7674792485167645193/">来源：经济参考报</a></div></li>
+</ul></div>
+<div class="card"><div class="card-title">📈 模块二 · 宏观数据 <span class="badge">Macro</span></div><div class="summary-banner" style="margin-bottom:12px"><strong>📌 核心看点：</strong>今日10:00统计局发布7月工业/社零/固投为最大变量；通胀温和（CPI+0.5%/PPI+3.5%）、金融数据"贷款弱社融稳"，央行流动性呵护明确。</div><ul class="event-list"><li><span class="ev-tag ev-critical">重磅</span><strong>今日10:00统计局发布7月经济数据：机构预期工业增加值+4.8%、社零+1.6%、固投-5.9%</strong><div class="ev-desc">7月工业或受极端天气+需求走弱放缓（中金预计+4.4%），社零在"以旧换新"高基数消退下或小幅回升，固投累计仍为负。数据将验证内需修复成色，直接决定下半年"增量政策"预期强度，是今日盘面最大变量。<br>🔗 <a href="https://view.inews.qq.com/a/20260812A0DTW000">来源：第一财经</a></div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>7月物价：CPI同比+0.5%(年内首降至1%下方)、PPI同比+3.5%，通胀温和、政策宽松空间打开</strong><div class="ev-desc">CPI涨幅比6月回落0.5pct，主因汽油价格回落；PPI高位回落但仍正增长。PPI-CPI剪刀差维持，上游资源盈利改善、下游传导不畅。低通胀下货币政策宽松空间犹存，市场对年内降准降息仍有预期。<br>🔗 <a href="http://m.toutiao.com/group/7673696247106028032/">来源：国家统计局/富国基金解读</a></div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>央行呵护流动性：8/14开展1万亿6个月买断式逆回购等额续作，8/17-19隔夜逆回购每日≤6000亿</strong><div class="ev-desc">央行首次在月中启用隔夜逆回购平抑税期扰动，单日净投放3480亿、结束连续9日净回笼。机构解读为"适度宽松"明确信号，后续不排除降准（预计年内25-50bp窗口）。对债市与权益市场流动性均构成支撑。<br>🔗 <a href="https://finance.sina.com.cn/roll/2026-08-14/doc-ininhait2891864.shtml">来源：21世纪经济报道/央视财经</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>7月金融数据：M2同比+7.7%、社融存量+7.4%，均高于名义GDP；7月新增人民币贷款-3400亿</strong><div class="ev-desc">“贷款弱、社融稳”延续——7月新增信贷罕见为负（-3400亿），反映实体融资需求偏弱；但社融与M2增速持续高于名义GDP，融资结构优化（债券+股票融资占比超贷款）。宽松格局对A股估值形成支撑。<br>🔗 <a href="https://m.hexun.com/stock/2026-08-16/224832035.html">来源：光大证券周报/央行数据</a></div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>7月外贸高景气：出口+17.8%、进口+21.2%，集成电路出口金额+116.6%、汽车+60.4%、船舶+92.4%</strong><div class="ev-desc">外需强劲是7月经济最大亮点，AI产业链与高端制造为最强支撑。但高增长多由出口单价与结构升级推动，量的扩张有限（集成电路出口量+1.9%）。外需韧性对冲内需疲弱，出口链中期景气仍可期。<br>🔗 <a href="http://m.toutiao.com/group/7673870420998701604/">来源：海关总署/富国基金</a></div></li>
+</ul></div>
+<div class="card"><div class="card-title">🏭 模块三 · 行业数据 <span class="badge">Industry</span></div><div class="summary-banner" style="margin-bottom:12px"><strong>📌 核心看点：</strong>AI算力与存储链景气度最高（业绩+订单验证），半导体设备获资金集中配置；港股互联网/创新药强势；船舶订单节奏暂缓。</div><ul class="event-list"><li><span class="ev-tag ev-critical">重磅</span><strong>存储芯片景气延续：闪迪周涨35.38%、美股存储链大涨，AI推理驱动需求</strong><div class="ev-desc">8/14美股存储股集体走强（闪迪+7%、希捷+5%、西数+4%、美光+2%），AI训练向推理扩张带动存储需求。A股存储链（长鑫科技、兆易创新、江波龙、佰维存储）节后有望联动，机构看好存储涨价周期下量价齐升。<br>🔗 <a href="https://stcn.com/article/detail/4078456.html">来源：证券时报</a></div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>全球AI算力链业绩验证：工银瑞信称芯片/服务器/AI材料头部企业高增，供需紧张延续</strong><div class="ev-desc">算力产业链密集披露高增长业绩与充沛在手订单，验证行业高景气。此前板块回调源于对年度经常性收入与资本开支持续性的担忧，随财报落地，机构认为全球AI算力产业仍将维持高景气，CPO/光模块/液冷中期逻辑不改。<br>🔗 <a href="http://m.toutiao.com/group/7674776914367758890/">来源：中国证券报/21世纪经济报道</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>半导体设备成资金主攻方向：相关ETF上周净流入超55亿，中韩半导体ETF周成交439.54亿</strong><div class="ev-desc">上周半导体赛道为交投最热方向，设备环节吸金最集中。国产替代+扩产逻辑下，设备环节（中微半导、北方华创等）获资金优先配置，反映机构对产业链中游业绩确定性的认可。<br>🔗 <a href="http://m.toutiao.com/group/7674776914367758890/">来源：中国证券报</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>港股互联网/创新药强势：7月以来恒指累涨11%领跑全球，南向净流入751亿港元</strong><div class="ev-desc">港股成为全球资金再配置焦点，外资7/16以来净流入超600亿港元，主动与被动资金共振。大摩上调恒指目标至28400点。港股互联网估值处历史低位+消费复苏与AI云双逻辑，创新药亦获ETF资金追捧。<br>🔗 <a href="http://m.toutiao.com/group/7674786696151466531/">来源：上海证券报</a></div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>7月全球新船订单环比-56%：中国船企市占率81%仍领先，新造船市场进入"暂缓"阶段</strong><div class="ev-desc">克拉克森数据显示7月全球新船订单357万CGT，环比大幅回落，行业进入订单消化期。中国船企以81%市占率继续领跑，短期订单节奏放缓或对船舶板块形成扰动，但存量订单交付确定性仍高。<br>🔗 <a href="http://m.toutiao.com/group/7674788287399199242/">来源：财联社</a></div></li>
+</ul></div>
+<div class="card"><div class="card-title">🔍 模块四 · 另类数据 <span class="badge">Alt-Data</span></div><div class="summary-banner" style="margin-bottom:12px"><strong>📌 核心看点：</strong>两融8连增+电子193亿领跑、ETF从宽基转向科技主题，"杠杆+资金"共振科技；外资与全球基金仍在流出，解禁压力小幅抬升。</div><ul class="event-list"><li><span class="ev-tag ev-critical">重磅</span><strong>两融余额8连增：截至8/13为2.68万亿，半个月增超730亿；电子行业融资净买入193亿居首</strong><div class="ev-desc">两融自8/4以来连续8个交易日增加，阶段性"去杠杆"基本完成（较6月峰值降约10%）。杠杆资金重点加仓电子（胜宏科技/生益科技/超纯科技融资净买入超10亿）、有色、医药，印证科技主线仍是资金共识。<br>🔗 <a href="http://m.toutiao.com/group/7674608714495214131/">来源：第一财经/大河财立方</a></div></li>
+<li><span class="ev-tag ev-critical">重磅</span><strong>ETF资金连续9日净流出累计1503亿：宽基遭撤、半导体设备与证券获加仓</strong><div class="ev-desc">8/14股票型ETF净流出49亿，沪深300ETF华泰柏瑞单周净流出77.29亿；但半导体设备ETF、证券ETF获逆势净流入。资金从宽基转向行业主题，风格上"弃权重、攻科技"，与两融加仓方向一致。<br>🔗 <a href="http://m.toutiao.com/group/7674776914367758890/">来源：中国证券报/财闻</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>全球基金8/6-12净流出A股67.92亿美元：外资对科技净流出15.45亿美元</strong><div class="ev-desc">EPFR数据显示外资连续净流出，其中科技、医疗保健流出最大，仅商品/材料、工业品获净流入。外资避险情绪未消，与北向8/13净卖出32亿相互印证，短期压制A股增量资金。<br>🔗 <a href="http://m.toutiao.com/group/7674531609239929344/">来源：中国银河策略</a></div></li>
+<li><span class="ev-tag ev-important">重要</span><strong>金价高位波动加剧：8月以来现货金涨8.36%、国内金价站上900元/克，分析提示追高风险</strong><div class="ev-desc">金价连日上涨后多空激辩，黄金分析师提示下半年波动或加大，不建议普通投资者重仓追高。贵金属股短期或随金价高位震荡，注意"涨多"后的技术性回调风险。<br>🔗 <a href="http://m.toutiao.com/group/7674788287399199242/">来源：财联社</a></div></li>
+<li><span class="ev-tag ev-info">关注</span><strong>本周限售解禁压力环比上升：29家公司解禁市值约442.65亿元；新基金发行降温</strong><div class="ev-desc">下周解禁市值较本周374亿小幅上升，节奏总体可控。本周权益类新基发行份额45.67亿份、占比降至65%，增量资金供给边际放缓，需关注解禁个股（尤其中报雷区）的短期抛压。<br>🔗 <a href="http://m.toutiao.com/group/7674531609239929344/">来源：中国银河策略</a></div></li>
+</ul></div>
+<div class="card"><div class="card-title">💡 后市展望 <span class="badge">Outlook</span></div><div class="analysis-box"><p><span class="tag tag-policy">政策面</span>央行1万亿买断式逆回购等额续作+月中首次启用隔夜逆回购，流动性呵护态度明确，二季度货政报告推动利率市场化改革（DR001成政策目标利率），政策宽松窗口仍在，年内降准预期未消。今日统计局7月经济数据与本周LPR报价是关键验证点——若内需数据偏弱，增量政策加码预期升温，反而利于成长与顺周期板块。</p><p><span class="tag tag-industry">产业面</span>中报业绩密集披露期是本周核心主线，AI算力链（中际旭创/天孚通信/紫金矿业）与存储链（兆易创新/长鑫科技）业绩兑现情况将决定科技板块能否从"情绪驱动"切换到"业绩驱动"。港股互联网+创新药强势、南向+外资共振，恒指7月领涨全球的赚钱效应有望外溢至A股相应板块。</p><p><b class="hl-blue">综合判断</b>：今日聚焦统计局数据与中报验证，市场大概率延续结构性行情。配置上沿三条线：①业绩确定性高的AI算力/存储/半导体设备（中报兑现+两融加仓共振）；②港股映射的互联网/创新药（资金回流+估值修复）；③黄金/有色等实物资产（PPI回升+降息预期）。风险端警惕消费走弱、地缘油价扰动及中报业绩雷。量能是核心变量——若成交重回2.3万亿上方，结构性行情有望扩散。</p><p>⚠️ 以上内容仅供参考，不构成投资建议。数据来源：国家统计局、央行、Wind、财联社、证券时报、中国证券报、第一财经等公开信息。</p></div></div>
+
+  <div class="footer">
+  子叩 · 每日股市简报 | 数据来源：stock-data-skill + 公开财经资讯<br>
+  以上内容仅供参考，不构成投资建议
+</div>
+
+</body>
+</html>
